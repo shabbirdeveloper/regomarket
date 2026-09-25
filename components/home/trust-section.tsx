@@ -6,7 +6,7 @@ const items = [
   { Icon: Smartphone, title: "Phone Verified", text: "Every seller confirms their mobile number with a one-time code." },
   { Icon: IdCard, title: "Identity Verified", text: "Sellers can verify their CNIC privately. Documents are never shown publicly." },
   { Icon: BadgeCheck, title: "Verified Shops", text: "Businesses checked by our GB team — address, trade and contact details." },
-  { Icon: Truck, title: "Delivery Available", text: "Selected verified shops take orders on REGO.pk and deliver locally." },
+  { Icon: Truck, title: "Delivery Available", text: "Selected verified shops take orders on REGOMARKET and deliver locally." },
   { Icon: Star, title: "Reviews & Track Record", text: "Ratings, member-since dates and completed deals on every seller." },
   { Icon: LockKeyhole, title: "Secure Messaging", text: "Chat without sharing your number until you're ready. Report anything that looks wrong." },
 ];
@@ -20,7 +20,7 @@ export function TrustSection() {
             id="trust-title"
             eyebrow="Trust & safety"
             title="Trade locally. Trade with confidence."
-            description="Every badge on REGO.pk means something specific — so you always know who you're dealing with."
+            description="Every badge on REGOMARKET means something specific — so you always know who you're dealing with."
           />
           <div className="mt-8 rounded-lg border border-line bg-paper p-5 text-[14px] leading-relaxed text-ink/80">
             <p>

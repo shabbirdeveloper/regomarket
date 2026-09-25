@@ -18,7 +18,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: site.title, template: "%s | REGO.pk" },
+  title: { default: site.title, template: "%s | REGOMARKET" },
   description: site.description,
   applicationName: site.name,
   keywords: [
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     "walnut",
     "livestock",
     "property GB",
-    "REGO.pk",
+    "REGOMARKET",
   ],
   alternates: { canonical: "/" },
   openGraph: {

@@ -3,7 +3,7 @@ import { unsplash } from "./media";
 
 /**
  * Gilgit-Baltistan location hierarchy: District → Tehsil → Town/Village.
- * REGO.pk is GB-only, so no Pakistan-wide locations exist anywhere in the UI.
+ * REGOMARKET is GB-only, so no Pakistan-wide locations exist anywhere in the UI.
  * In production this is seeded into the `districts`, `tehsils` and `towns`
  * tables; components only consume it through lib/data.
  */

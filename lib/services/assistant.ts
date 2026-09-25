@@ -1,5 +1,5 @@
 /**
- * Future REGO features — interfaces only. Nothing here is implemented or
+ * Future REGOMARKET features — interfaces only. Nothing here is implemented or
  * surfaced in the UI yet; components can depend on these contracts so AI and
  * voice features slot in later without rewrites.
  */
@@ -33,7 +33,7 @@ export interface TrustService {
 }
 
 export interface DealService {
-  /** REGO Deal / inspection / local delivery hooks */
+  /** REGOMARKET Deal / inspection / local delivery hooks */
   requestInspection(listing: Pick<Listing, "id">, when: string): Promise<{ requestId: string }>;
   quoteDelivery(from: Place, to: Place, weightKg?: number): Promise<{ amount: number; days: number } | null>;
 }

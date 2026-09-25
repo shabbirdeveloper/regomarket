@@ -1,8 +1,8 @@
 {
-  "name": "rego-pk",
+  "name": "regomarket",
   "version": "0.1.0",
   "private": true,
-  "description": "REGO.pk — Gilgit-Baltistan's local buy & sell marketplace",
+  "description": "REGOMARKET — Gilgit-Baltistan's local buy & sell marketplace",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

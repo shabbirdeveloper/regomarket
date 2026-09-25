@@ -1,16 +1,16 @@
 export const site = {
-  name: "REGO.pk",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://rego.pk",
+  name: "REGOMARKET",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://regomarket.pk",
   tagline: "Buy & Sell in Gilgit-Baltistan",
   positioning: "Gilgit-Baltistan's Local Buy & Sell Marketplace",
-  title: "REGO.pk | Buy & Sell in Gilgit-Baltistan",
+  title: "REGOMARKET | Buy & Sell in Gilgit-Baltistan",
   description:
-    "Buy and sell dry fruits, livestock, property, vehicles, electronics, local products and more across Gilgit-Baltistan. Discover verified local shops and sellers on REGO.pk.",
+    "Buy and sell dry fruits, livestock, property, vehicles, electronics, local products and more across Gilgit-Baltistan. Discover verified local shops and sellers on REGOMARKET.",
   locale: "en_PK",
   social: {
-    facebook: "https://facebook.com/rego.pk",
-    instagram: "https://instagram.com/rego.pk",
-    youtube: "https://youtube.com/@rego.pk",
+    facebook: "https://facebook.com/regomarket",
+    instagram: "https://instagram.com/regomarket",
+    youtube: "https://youtube.com/@regomarket",
   },
 } as const;
 
@@ -55,7 +55,7 @@ export const footerNav = [
   {
     title: "Company",
     links: [
-      { label: "About REGO.pk", href: "/about" },
+      { label: "About REGOMARKET", href: "/about" },
       { label: "Blog", href: "/blog" },
       { label: "Terms", href: "/terms" },
       { label: "Privacy", href: "/privacy" },

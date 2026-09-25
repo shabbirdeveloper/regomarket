@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
- * The "O" of REGO: a gold ring framing a snow-capped Karakoram peak.
+ * The "O" of REGOMARKET: a gold ring framing a snow-capped Karakoram peak.
  * Sized in `em` so it always matches the wordmark's cap height.
  */
 function MountainO({ dark }: { dark?: boolean }) {
@@ -43,16 +43,16 @@ export function Logo({
 }) {
   const dark = tone === "dark";
   return (
-    <Link href="/" className={cn("flex shrink-0 flex-col leading-none", className)} aria-label="REGO.pk — home">
+    <Link href="/" className={cn("flex shrink-0 flex-col leading-none", className)} aria-label="REGOMARKET — home">
       <span
         className={cn(
-          "whitespace-nowrap font-serif text-[24px] font-bold tracking-[-0.02em] lg:text-[26px]",
+          "whitespace-nowrap font-serif text-[21px] font-bold tracking-[-0.02em] sm:text-[23px] lg:text-[25px]",
           dark ? "text-white" : "text-mountain",
         )}
       >
         REG
         <MountainO dark={dark} />
-        <span className={cn("font-semibold", dark ? "text-gold-soft" : "text-gold")}>.pk</span>
+        <span className={dark ? "text-gold-soft" : "text-gold"}>MARKET</span>
       </span>
       {showTagline && (
         <span

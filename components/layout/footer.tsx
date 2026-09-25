@@ -9,9 +9,9 @@ import { Logo } from "./logo";
 export async function Footer() {
   const districts = await getDistricts();
   const socials = [
-    { href: site.social.facebook, label: "REGO.pk on Facebook", Icon: FacebookIcon },
-    { href: site.social.instagram, label: "REGO.pk on Instagram", Icon: InstagramIcon },
-    { href: site.social.youtube, label: "REGO.pk on YouTube", Icon: YouTubeIcon },
+    { href: site.social.facebook, label: "REGOMARKET on Facebook", Icon: FacebookIcon },
+    { href: site.social.instagram, label: "REGOMARKET on Instagram", Icon: InstagramIcon },
+    { href: site.social.youtube, label: "REGOMARKET on YouTube", Icon: YouTubeIcon },
   ];
 
   return (
@@ -76,7 +76,7 @@ export async function Footer() {
         </div>
 
         <div className="mt-6 flex flex-col gap-2 border-t border-white/10 pt-6 text-[13px] text-white/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 REGO.pk</p>
+          <p>© 2026 REGOMARKET</p>
           <p>Gilgit-Baltistan, Pakistan</p>
         </div>
       </div>

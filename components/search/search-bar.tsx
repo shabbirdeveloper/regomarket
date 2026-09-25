@@ -32,7 +32,7 @@ export function SearchBar({
         action="/search"
         method="get"
         role="search"
-        aria-label="Search REGO.pk"
+        aria-label="Search REGOMARKET"
         className={cn("on-light flex h-14 items-center rounded-lg border border-line bg-paper pl-4 pr-1.5 shadow-float", className)}
       >
         <Search className="size-5 shrink-0 text-muted" aria-hidden />
@@ -63,7 +63,7 @@ export function SearchBar({
       action="/search"
       method="get"
       role="search"
-      aria-label="Search REGO.pk"
+      aria-label="Search REGOMARKET"
       className={cn(
         "on-light flex h-[62px] items-stretch rounded-[14px] border border-line bg-paper p-1.5 shadow-float",
         className,

@@ -44,7 +44,7 @@ export function CreateShopCTA() {
               Turn your local business into a digital shop
             </h2>
             <p className="mt-4 max-w-[52ch] text-[16px] leading-relaxed text-white/75">
-              Create your REGO.pk store, showcase your products and connect directly with buyers across
+              Create your REGOMARKET store, showcase your products and connect directly with buyers across
               Gilgit-Baltistan.
             </p>
             <ul className="mt-7 grid max-w-xl gap-x-8 gap-y-3 sm:grid-cols-2">

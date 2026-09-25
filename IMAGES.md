@@ -1,4 +1,4 @@
-# REGO.pk — Photos
+# REGOMARKET — Photos
 
 ## Current state: interim Unsplash photography
 

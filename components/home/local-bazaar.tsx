@@ -8,7 +8,7 @@ export function LocalBazaar({ bazaars }: { bazaars: Bazaar[] }) {
       <div className="shell section-y">
         <SectionHeader
           id="bazaar-title"
-          eyebrow="Only on REGO.pk"
+          eyebrow="Only on REGOMARKET"
           title="Local Bazaar"
           description="GB's real markets, online. Walk the shops of Skardu, Gilgit, Aliabad, Khaplu and Shigar — new arrivals and local offers, from home."
           action={{ label: "All bazaars", href: "/bazaar" }}

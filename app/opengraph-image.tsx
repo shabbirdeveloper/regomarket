@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "REGO.pk — Buy & Sell in Gilgit-Baltistan";
+export const alt = "REGOMARKET — Buy & Sell in Gilgit-Baltistan";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -23,7 +23,7 @@ export default function OpengraphImage() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 40, fontWeight: 700 }}>
           <span>REGO</span>
-          <span style={{ color: "#E6C77A", marginLeft: -12 }}>.pk</span>
+          <span style={{ color: "#E6C77A", marginLeft: -16 }}>MARKET</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 76, lineHeight: 1.05, fontWeight: 600 }}>Buy &amp; Sell in</div>

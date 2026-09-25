@@ -3,7 +3,7 @@ import type { VerificationLevel } from "@/types";
 import { cn } from "@/lib/utils";
 
 const META: Record<VerificationLevel, { label: string; short: string; Icon: typeof BadgeCheck }> = {
-  rego: { label: "REGO Verified", short: "REGO Verified", Icon: ShieldCheck },
+  rego: { label: "REGOMARKET Verified", short: "REGOMARKET Verified", Icon: ShieldCheck },
   business: { label: "Business Verified", short: "Verified Business", Icon: Building2 },
   identity: { label: "Identity Verified", short: "ID Verified", Icon: IdCard },
   phone: { label: "Phone Verified", short: "Phone Verified", Icon: Phone },

@@ -11,7 +11,7 @@ export default function NotFound() {
           This path leads off the map.
         </h1>
         <p className="mt-3 max-w-md text-muted">
-          The page may have moved, or this part of REGO.pk is still being built. Try searching, or head back home.
+          The page may have moved, or this part of REGOMARKET is still being built. Try searching, or head back home.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
           <Link href="/" className={buttonVariants({ variant: "primary" })}>

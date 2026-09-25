@@ -1,5 +1,5 @@
 /* ==========================================================================
-   REGO.pk domain model
+   REGOMARKET domain model
    Shapes mirror the planned Supabase tables so mock data can be swapped for
    real queries without touching components.
    ========================================================================== */
@@ -130,7 +130,7 @@ export interface Seller {
   rating?: number;
   reviewCount?: number;
   responseTime?: string;
-  /** Verified shops that take orders directly on REGO.pk (checkout + delivery) */
+  /** Verified shops that take orders directly on REGOMARKET (checkout + delivery) */
   acceptsOrders?: boolean;
   /** Shop delivers locally */
   delivery?: boolean;
