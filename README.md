@@ -1,4 +1,4 @@
-# REGO.pk
+# REGOMARKET
 
 Gilgit-Baltistan's local buy & sell marketplace. **Discover → Contact → Negotiate → Deal.**
 
