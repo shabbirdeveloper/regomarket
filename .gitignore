@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+.DS_Store
+
+# Local screenshots / previews (not part of the app)
+Claude outputs/
