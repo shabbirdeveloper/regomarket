@@ -1,6 +1,7 @@
 export const site = {
   name: "REGOMARKET",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://regomarket.pk",
+  // `||` (not `??`) so an empty value also falls back — new URL("") breaks the build
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://regomarket.pk",
   tagline: "Buy & Sell in Gilgit-Baltistan",
   positioning: "Gilgit-Baltistan's Local Buy & Sell Marketplace",
   title: "REGOMARKET | Buy & Sell in Gilgit-Baltistan",

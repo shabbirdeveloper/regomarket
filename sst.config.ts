@@ -35,7 +35,8 @@ export default $config({
       environment: {
         NEXT_PUBLIC_SUPABASE_URL: supabaseUrl.value,
         NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonKey.value,
-        NEXT_PUBLIC_SITE_URL: isProd && domain ? `https://${domain}` : "",
+        // Only set when the real domain is live; otherwise lib/site.ts falls back
+        ...(isProd && domain ? { NEXT_PUBLIC_SITE_URL: `https://${domain}` } : {}),
       },
       domain: isProd && domain ? { name: domain, redirects: [`www.${domain}`] } : undefined,
       server: { memory: "1024 MB" },
