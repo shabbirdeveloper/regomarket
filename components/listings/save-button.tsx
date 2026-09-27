@@ -24,7 +24,7 @@ export function SaveButton({ id, title, className }: { id: string; title: string
       }}
       onAnimationEnd={() => setPop(false)}
       className={cn(
-        "grid size-9 place-items-center rounded-full bg-paper/95 text-ink/70 shadow-[0_1px_3px_rgb(0_0_0/0.15)] transition-colors hover:text-urgent",
+        "glass-pill grid size-9 place-items-center rounded-full text-ink/75 transition-[color,transform] hover:scale-105 hover:text-urgent",
         saved && "text-urgent",
         className,
       )}

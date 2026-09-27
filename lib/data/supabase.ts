@@ -1,6 +1,12 @@
 /**
- * Supabase integration point (not active yet).
+ * Supabase integration point.
  *
+ * Schema: supabase/migrations/20260928000000_init.sql (tables, RLS, storage).
+ * Demo rows: supabase/seed.sql (built from /data by `npm run db:seed`).
+ * Loader: lib/data/remote.ts — lib/data/index.ts switches to it automatically
+ * when the two env vars below are set (see .env.example).
+ *
+ * Original plan of tables (kept for reference):
  * Planned tables — match the types in /types:
  *   districts(slug, name, headquarters, division)
  *   tehsils(slug, district_slug, name)
@@ -18,8 +24,6 @@
  *   saved_listings(user_id, listing_id), shop_follows(user_id, shop_id)
  *   conversations / messages
  *
- * To activate: `npm i @supabase/supabase-js`, create a server client here and
- * re-implement the functions in ./index.ts with the same signatures.
  */
 export const SUPABASE_ENABLED = Boolean(
   process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,

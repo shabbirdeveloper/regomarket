@@ -16,13 +16,13 @@ export function primaryBadge(badges: BadgeKind[]): BadgeKind | undefined {
   return (["urgent", "verified", "featured", "wholesale"] as const).find((b) => badges.includes(b));
 }
 
-/** Small warm-white chip that sits on product photos. One per image. */
+/** Small frosted-glass chip that sits on product photos. One per image. */
 export function ListingBadge({ badge, className }: { badge: BadgeKind; className?: string }) {
   const { label, Icon, icon } = META[badge];
   return (
     <span
       className={cn(
-        "inline-flex h-6 items-center gap-1 rounded-xs bg-paper/95 px-2 text-[11.5px] font-semibold text-ink shadow-[0_1px_2px_rgb(0_0_0/0.12)]",
+        "glass-pill inline-flex h-6 items-center gap-1 rounded-md px-2 text-[11.5px] font-semibold text-ink",
         className,
       )}
     >

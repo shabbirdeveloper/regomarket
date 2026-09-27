@@ -1,0 +1,39 @@
+# Deploys REGOMARKET to AWS (Mumbai) on every push to main.
+# GitHub → Settings → Secrets and variables → Actions → add:
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY   (IAM user "regomarket-deploy")
+# and (optional) a variable REGO_DOMAIN = regomarket.pk once the domain is in Route 53.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit -p .
+
+      - name: Deploy with SST
+        run: npx sst deploy --stage production
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
+          REGO_DOMAIN: ${{ vars.REGO_DOMAIN }}

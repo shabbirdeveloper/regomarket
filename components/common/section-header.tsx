@@ -21,7 +21,7 @@ interface SectionHeaderProps {
 }
 
 /**
- * Editorial section heading: optional eyebrow, Poppins title, one-line lead,
+ * Editorial section heading: gold-rule eyebrow, Poppins title, one-line lead,
  * and a quiet "View all" link on the right (desktop).
  */
 export function SectionHeader({
@@ -43,19 +43,21 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        "flex flex-col gap-5",
-        center ? "items-center text-center" : "md:flex-row md:items-end md:justify-between",
+        "flex flex-col gap-3",
+        center ? "items-center text-center" : "md:flex-row md:items-end md:justify-between md:gap-6",
         className,
       )}
     >
       <div className={cn("min-w-0", center ? "max-w-2xl" : "max-w-3xl")}>
         {mark && <MountainMark className={cn("mb-4 h-4 w-9", center && "mx-auto")} />}
-        {eyebrow && <p className={cn("eyebrow mb-3", dark ? "text-gold-soft" : "text-gold-ink")}>{eyebrow}</p>}
+        {/* Eyebrows were dropped: real marketplaces lead with the title. Kept in
+            the API (screen-reader context only) so callers don't break. */}
+        {eyebrow && <span className="sr-only">{eyebrow}: </span>}
         <h2 id={id} className={cn("heading-section", dark ? "text-white" : "text-ink")}>
           {title}
         </h2>
         {lead && (
-          <p className={cn("lead mt-3", dark && "text-white/75", center && "mx-auto")}>{lead}</p>
+          <p className={cn("mt-1.5 text-[14.5px] leading-relaxed", dark ? "text-white/70" : "text-muted", center && "mx-auto")}>{lead}</p>
         )}
       </div>
       {(children || action) && (
@@ -65,7 +67,7 @@ export function SectionHeader({
             <Link
               href={action.href}
               className={cn(
-                "group hidden shrink-0 items-center gap-1.5 text-[14px] font-semibold md:inline-flex",
+                "group hidden shrink-0 items-center gap-1.5 text-[14px] font-semibold underline-offset-4 hover:underline md:inline-flex",
                 dark ? "text-gold-soft hover:text-white" : "text-mountain hover:text-forest",
               )}
             >

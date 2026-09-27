@@ -9,3 +9,11 @@ next-env.d.ts
 
 # Local screenshots / previews (not part of the app)
 Claude outputs/
+
+# SST / OpenNext build output
+.sst
+.open-next
+
+# Local secrets
+.env
+.env.local

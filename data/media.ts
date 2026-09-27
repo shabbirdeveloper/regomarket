@@ -21,8 +21,8 @@ export function unsplash(id: string, alt: string, width = 1600, height = 1200): 
 
 export const siteImages = {
   hero: unsplash(
-    "photo-1684230715186-cb6387f1f09f",
-    "Turquoise lake beneath the Karakoram peaks of Gilgit-Baltistan",
+    "photo-1788434968884-3caf3ba6cb7a",
+    "Autumn trees along a turquoise mountain river beneath rugged peaks",
     2400,
     1350,
   ),

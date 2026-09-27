@@ -23,6 +23,14 @@ export const mainNav = [
   { label: "Sell", href: "/sell" },
 ];
 
+/** Compact desktop header nav (the rest lives in the chip row on the homepage) */
+export const headerNav = [
+  { label: "Categories", href: "/search" },
+  { label: "Shops", href: "/shops" },
+  { label: "Bazaars", href: "/bazaar" },
+  { label: "Wanted", href: "/wanted" },
+];
+
 export const footerNav = [
   {
     title: "Marketplace",
@@ -64,14 +72,14 @@ export const footerNav = [
 ];
 
 export const popularSearches = [
-  "Dry Apricot",
-  "Walnut",
-  "Goat",
-  "Land",
-  "iPhone",
+  "Khubani",
+  "Akhrot",
+  "Bakri",
+  "Plot in Jutial",
   "Honda 125",
-  "House for Rent",
-  "Camping Gear",
+  "iPhone",
+  "House for rent",
+  "Pattu shawl",
 ] as const;
 
 /** Route builders — one place to change URL shapes. */
@@ -87,3 +95,9 @@ export const routes = {
     return s ? `/search?${s}` : "/search";
   },
 };
+
+/**
+ * Signed-in preview user for the header until Supabase Auth is wired.
+ * Replace with the session user (see lib/data/supabase.ts).
+ */
+export const previewUser = { name: "Shabbir", initials: "SH", unreadMessages: 3, unreadNotifications: 2 };

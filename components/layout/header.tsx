@@ -1,62 +1,115 @@
 import Link from "next/link";
-import { Bell, MessageSquare, Plus, Search, UserRound } from "lucide-react";
+import { Suspense } from "react";
+import { Bell, MessageSquareText, Plus, Search, UserRound } from "lucide-react";
+import { previewUser } from "@/lib/site";
 import { getBazaars, getCategories } from "@/lib/data";
 import { districtBySlug } from "@/data/locations";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { HeaderQueryInput } from "./header-query-input";
 import { Logo } from "./logo";
 import { MainNav } from "./main-nav";
 import { MobileMenu } from "./mobile-menu";
 import { SavedLink } from "./saved-link";
 import { headerCountCls, headerIconCls } from "./header-styles";
 
-/** Compact sticky header: logo · primary nav · icon actions · one CTA */
+const searchInputCls =
+  "h-11 w-full rounded-full border border-line-strong bg-cream pl-5 pr-14 text-[14.5px] text-ink outline-none transition-[border-color,background-color,box-shadow] placeholder:text-muted hover:border-ink/30 focus:border-mountain focus:bg-white focus:shadow-[0_0_0_4px_rgb(6_78_59/0.1)]";
+
+/** The search that lives in the header on every page — a plain GET to /search. */
+function HeaderSearch({ id, className }: { id: string; className?: string }) {
+  const input = {
+    id,
+    name: "q",
+    type: "search",
+    autoComplete: "off",
+    enterKeyHint: "search" as const,
+    placeholder: "Search khubani, goats, land, phones…",
+    className: searchInputCls,
+  };
+  return (
+    <form action="/search" method="get" role="search" aria-label="Search REGOMARKET" className={cn("relative", className)}>
+      <label htmlFor={id} className="sr-only">
+        Search ads
+      </label>
+      {/* Shows the current words on /search; plain input while params load */}
+      <Suspense fallback={<input {...input} />}>
+        <HeaderQueryInput {...input} />
+      </Suspense>
+      <button
+        type="submit"
+        aria-label="Search"
+        className="absolute right-1 top-1 grid h-9 w-11 place-items-center rounded-full bg-mountain text-white transition-colors hover:bg-mountain-hover"
+      >
+        <Search className="size-[18px]" strokeWidth={2.4} aria-hidden />
+      </button>
+    </form>
+  );
+}
+
+/** Marketplace header: logo · short nav · big search · account · icons · Sell */
 export async function Header() {
   const [categories, bazaars] = await Promise.all([getCategories(), getBazaars()]);
   const navBazaars = bazaars.map((b) => ({ slug: b.slug, name: b.name, district: districtBySlug[b.district].name }));
 
+  const user = previewUser;
+
   return (
-    <header className="site-header sticky top-0 z-50 border-b border-line bg-paper">
-      <div className="shell flex h-16 items-center gap-6 lg:h-[72px]">
+    <header className="site-header sticky top-0 z-50 border-b border-line bg-white">
+      <div className="shell flex h-16 items-center gap-4 lg:h-[72px] lg:gap-5">
         <Logo />
 
         <MainNav categories={categories} bazaars={navBazaars} />
 
-        <div className="ml-auto flex items-center gap-0.5 lg:gap-1">
-          <Link href="/search" data-tip="Search" className={headerIconCls}>
-            <Search className="size-5" strokeWidth={1.75} aria-hidden />
-            <span className="sr-only">Search</span>
+        <HeaderSearch id="header-q" className="hidden min-w-[240px] flex-1 md:block" />
+
+        <div className="ml-auto flex shrink-0 items-center gap-0.5 md:ml-0 lg:gap-1">
+          <Link
+            href="/dashboard"
+            className="mr-1 hidden items-center gap-2 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-cream min-[1680px]:flex"
+          >
+            <span className="grid size-8 place-items-center rounded-full bg-mint text-[12px] font-semibold text-mountain">
+              {user.initials}
+            </span>
+            <span className="leading-tight">
+              <span className="block text-[12px] text-muted">Hi, {user.name}</span>
+              <span className="block text-[13px] font-semibold text-ink">My ads & account</span>
+            </span>
           </Link>
+          <Link href="/dashboard" data-tip="My account" className={cn(headerIconCls, "hidden md:grid min-[1680px]:hidden")}>
+            <UserRound className="size-[21px]" strokeWidth={1.8} aria-hidden />
+            <span className="sr-only">My account</span>
+          </Link>
+
           <SavedLink className="hidden md:grid" />
           <Link href="/messages" data-tip="Messages" className={cn(headerIconCls, "hidden md:grid")}>
-            <MessageSquare className="size-5" strokeWidth={1.75} aria-hidden />
-            <span className="sr-only">Messages, 2 unread</span>
-            <span aria-hidden className={cn(headerCountCls, "bg-mountain text-white")}>
-              2
+            <MessageSquareText className="size-[21px]" strokeWidth={1.8} aria-hidden />
+            <span className="sr-only">Messages, {user.unreadMessages} unread</span>
+            <span aria-hidden className={headerCountCls}>
+              {user.unreadMessages}
             </span>
           </Link>
           <Link href="/notifications" data-tip="Notifications" className={headerIconCls}>
-            <Bell className="size-5" strokeWidth={1.75} aria-hidden />
-            <span className="sr-only">Notifications, new</span>
-            <span aria-hidden className="absolute right-2.5 top-2.5 size-2 rounded-full bg-gold ring-2 ring-paper" />
-          </Link>
-          <Link href="/dashboard" data-tip="Account" className={cn(headerIconCls, "hidden md:grid")}>
-            <span className="grid size-8 place-items-center rounded-full border border-line bg-stone text-ink/80">
-              <UserRound className="size-[18px]" strokeWidth={1.75} aria-hidden />
+            <Bell className="size-[21px]" strokeWidth={1.8} aria-hidden />
+            <span className="sr-only">Notifications, {user.unreadNotifications} new</span>
+            <span aria-hidden className={headerCountCls}>
+              {user.unreadNotifications}
             </span>
-            <span className="sr-only">My account</span>
           </Link>
 
           <Link
             href="/sell"
-            className={cn(buttonVariants({ variant: "premium", size: "md" }), "ml-2 hidden h-10 px-4 sm:inline-flex lg:ml-3")}
+            className="ml-2 hidden h-10 items-center gap-1.5 rounded-full bg-mountain px-4 text-[14px] font-semibold text-white transition-colors hover:bg-mountain-hover sm:inline-flex"
           >
-            <Plus strokeWidth={2.2} aria-hidden />
-            Sell<span className="-ml-1 hidden lg:inline"> / Create Shop</span>
+            <Plus className="size-[18px]" strokeWidth={2.4} aria-hidden />
+            Sell
           </Link>
 
           <MobileMenu categories={categories} />
         </div>
+      </div>
+      {/* Phones: search gets its own full-width row */}
+      <div className="shell pb-3 md:hidden">
+        <HeaderSearch id="header-q-m" />
       </div>
     </header>
   );

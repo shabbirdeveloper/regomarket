@@ -1,21 +1,21 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
 /**
- * Card surfaces. Border-first; the hover lift is reserved for cards that
- * navigate somewhere. Radius 12px (large image blocks use rounded-xl = 16px).
+ * Card surfaces — frosted glass (see `.glass-*` in app/globals.css). The hover
+ * lift is reserved for cards that navigate somewhere. Radius 16px.
  */
 export const cardVariants = cva("relative overflow-hidden rounded-lg", {
   variants: {
     variant: {
-      /** Standard white card */
-      plain: "border border-line bg-paper",
-      /** Clickable card: -2px lift, stronger border, whisper shadow */
+      /** Standard frosted card */
+      plain: "glass-card",
+      /** Clickable frosted card: -4px lift, gold-tinted edge and deeper glow on hover */
       interactive:
-        "group border border-line bg-paper transition-[transform,border-color,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:border-line-strong hover:shadow-hover has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-mountain has-[a:focus-visible]:ring-offset-2",
-      /** Quiet inset panel (spec tables, summaries) */
-      muted: "bg-stone",
-      /** Demand card (Wanted) */
-      notice: "border border-gold/40 bg-paper",
+        "group glass-card glass-card-hover has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-mountain has-[a:focus-visible]:ring-offset-2",
+      /** Recessed glass panel (spec tables, summaries) */
+      muted: "glass-inset",
+      /** Demand card (Wanted) — frosted with a gold edge */
+      notice: "group glass-card glass-card-hover ring-1 ring-inset ring-gold/25",
       /** Photo card with overlay text */
       media: "group isolate bg-deep text-white",
     },

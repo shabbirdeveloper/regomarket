@@ -25,7 +25,7 @@ export function LivestockMarket({ listings }: { listings: ListingCardData[] }) {
     <>
       <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div role="group" aria-label="Filter by animal" className="rail -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="inline-flex gap-1 rounded-md border border-line bg-paper p-1">
+          <div className="inline-flex gap-2">
             {FILTERS.map((f) => {
               const on = f.key === filter;
               return (
@@ -35,8 +35,8 @@ export function LivestockMarket({ listings }: { listings: ListingCardData[] }) {
                   aria-pressed={on}
                   onClick={() => setFilter(f.key)}
                   className={cn(
-                    "h-9 shrink-0 rounded-sm px-4 text-[13.5px] font-medium transition-colors",
-                    on ? "bg-mountain text-white" : "text-ink/75 hover:bg-stone hover:text-ink",
+                    "h-9 shrink-0 rounded-md border px-3.5 text-[13.5px] font-medium transition-colors",
+                    on ? "border-ink bg-ink text-white" : "border-line bg-white text-ink/75 hover:border-ink/40 hover:text-ink",
                   )}
                 >
                   {f.label}

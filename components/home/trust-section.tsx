@@ -1,52 +1,81 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, IdCard, LockKeyhole, Smartphone, Star, Truck } from "lucide-react";
-import { SectionHeader } from "@/components/common/section-header";
+import { BadgeCheck, Building2, IdCard, Phone } from "lucide-react";
 
-const items = [
-  { Icon: Smartphone, title: "Phone Verified", text: "Every seller confirms their mobile number with a one-time code." },
-  { Icon: IdCard, title: "Identity Verified", text: "Sellers can verify their CNIC privately. Documents are never shown publicly." },
-  { Icon: BadgeCheck, title: "Verified Shops", text: "Businesses checked by our GB team — address, trade and contact details." },
-  { Icon: Truck, title: "Delivery Available", text: "Selected verified shops take orders on REGOMARKET and deliver locally." },
-  { Icon: Star, title: "Reviews & Track Record", text: "Ratings, member-since dates and completed deals on every seller." },
-  { Icon: LockKeyhole, title: "Secure Messaging", text: "Chat without sharing your number until you're ready. Report anything that looks wrong." },
+const tips = [
+  {
+    n: "1",
+    title: "Meet in a public place",
+    text: "A busy bazaar, a petrol pump or outside a bank. For land and houses, visit with someone you trust.",
+  },
+  {
+    n: "2",
+    title: "See it before you pay",
+    text: "Check the phone, start the car, look at the animal in daylight. Ask for vaccination records and papers.",
+  },
+  {
+    n: "3",
+    title: "Never pay in advance",
+    text: "Don't send Easypaisa, JazzCash or bank transfers to someone you haven't met. Real sellers don't ask for it.",
+  },
 ];
 
+const badges = [
+  { Icon: Phone, label: "Phone verified", text: "Number confirmed by SMS code" },
+  { Icon: IdCard, label: "ID verified", text: "CNIC checked privately, never shown" },
+  { Icon: Building2, label: "Verified shop", text: "Address and trade checked by our GB team" },
+  { Icon: BadgeCheck, label: "REGOMARKET verified", text: "Long record of good deals" },
+];
+
+/** Practical, specific safety advice — the kind a local would give you. */
 export function TrustSection() {
   return (
-    <section aria-labelledby="trust-title" className="shell section-y">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-        <div>
-          <SectionHeader
-            id="trust-title"
-            eyebrow="Trust & safety"
-            title="Trade locally. Trade with confidence."
-            description="Every badge on REGOMARKET means something specific — so you always know who you're dealing with."
-          />
-          <div className="mt-8 rounded-lg border border-line bg-paper p-5 text-[14px] leading-relaxed text-ink/80">
-            <p>
-              <span className="font-semibold text-ink">Safety first:</span> meet in a public place, inspect items or
-              animals in person, and never send advance payment to someone you haven&apos;t met.
+    <section aria-labelledby="trust-title" className="border-y border-line bg-white">
+      <div className="shell section-y">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+          <div>
+            <h2 id="trust-title" className="heading-section text-ink">
+              Deal safely
+            </h2>
+            <p className="mt-1.5 text-[14.5px] text-muted">Three things that prevent almost every bad deal.</p>
+
+            <ol className="mt-6 divide-y divide-line border-y border-line">
+              {tips.map((t) => (
+                <li key={t.n} className="flex gap-4 py-4">
+                  <span className="tabular w-6 shrink-0 text-[20px] font-bold leading-6 text-gold">{t.n}</span>
+                  <span>
+                    <span className="block text-[15px] font-semibold text-ink">{t.title}</span>
+                    <span className="mt-0.5 block text-[14px] leading-relaxed text-muted">{t.text}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 text-[13.5px] text-muted">
+              Something looks wrong?{" "}
+              <Link href="/help/report" className="font-medium text-mountain underline underline-offset-4">
+                Report the ad
+              </Link>{" "}
+              and our team will check it.
             </p>
-            <Link href="/help/safety" className="group mt-3 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-mountain">
-              Read safety tips
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+          </div>
+
+          <div className="rounded-lg bg-cream p-5 md:p-6">
+            <h3 className="text-[15px] font-semibold text-ink">What the badges mean</h3>
+            <ul className="mt-4 space-y-3.5">
+              {badges.map(({ Icon, label, text }) => (
+                <li key={label} className="flex items-start gap-3">
+                  <Icon className="mt-0.5 size-[18px] shrink-0 text-success" strokeWidth={1.9} aria-hidden />
+                  <span className="text-[14px] leading-snug">
+                    <span className="font-medium text-ink">{label}</span>
+                    <span className="block text-[13px] text-muted">{text}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <Link href="/help/safety" className="mt-5 inline-block text-[13.5px] font-semibold text-mountain underline-offset-4 hover:underline">
+              Read the full safety guide
             </Link>
           </div>
         </div>
-
-        <ul className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
-          {items.map(({ Icon, title, text }) => (
-            <li key={title} className="flex gap-4">
-              <span className="grid size-11 shrink-0 place-items-center rounded-md bg-mint text-mountain">
-                <Icon className="size-5" strokeWidth={1.75} aria-hidden />
-              </span>
-              <span>
-                <span className="block text-[15px] font-semibold text-ink">{title}</span>
-                <span className="mt-1 block text-[14px] leading-relaxed text-muted">{text}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );

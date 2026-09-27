@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import type { Category } from "@/types";
-import { mainNav, routes } from "@/lib/site";
+import { headerNav, routes } from "@/lib/site";
 import { CategoryIcon } from "@/components/common/category-icon";
 import { cn } from "@/lib/utils";
 
@@ -17,10 +17,10 @@ export interface NavBazaar {
 
 const linkCls = (active: boolean) =>
   cn(
-    "relative inline-flex h-[72px] items-center gap-1 whitespace-nowrap px-3 text-[14px] font-medium transition-colors",
+    "relative inline-flex h-[72px] items-center gap-1 whitespace-nowrap px-2.5 text-[13.5px] font-medium transition-colors",
     active ? "text-mountain" : "text-ink/75 hover:text-ink",
     // animated underline sitting on the header's bottom border
-    "after:absolute after:inset-x-3 after:-bottom-px after:h-[2px] after:origin-left after:bg-mountain after:transition-transform after:duration-300",
+    "after:absolute after:inset-x-2.5 after:-bottom-px after:h-[2px] after:origin-left after:bg-mountain after:transition-transform after:duration-300",
     active ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100",
   );
 
@@ -48,7 +48,7 @@ export function MainNav({ categories, bazaars }: { categories: Category[]; bazaa
   return (
     <nav aria-label="Main" className="hidden self-stretch xl:block">
       <ul className="flex h-full items-center">
-        {mainNav.map((item) => {
+        {headerNav.map((item) => {
           const active = isActive(item.href);
           const hasMenu = item.href === "/search" || item.href === "/bazaar";
 

@@ -12,8 +12,8 @@
 
 @theme {
   /* ---------- Typography ---------- */
-  /* Poppins site-wide. `font-serif` is kept as the heading alias so heading classes
-     stay in one place — it now resolves to Poppins too. */
+  /* Poppins site-wide. `font-serif` is kept as the heading alias (heading-* utilities)
+     and resolves to Poppins too. */
   --font-serif: var(--font-text), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-sans: var(--font-text), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-ui: var(--font-sans);
@@ -107,9 +107,14 @@
 
 /* Section rhythm: 56px mobile · 80px tablet · 104px desktop */
 @utility section-y {
-  padding-block: 3.5rem;
-  @media (width >= 48rem) { padding-block: 5rem; }
-  @media (width >= 80rem) { padding-block: 6.5rem; }
+  padding-block: 2.5rem;
+  @media (width >= 48rem) { padding-block: 3.5rem; }
+  @media (width >= 80rem) { padding-block: 4rem; }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 }
 
 /* Horizontal scroller (categories, shops on mobile) */
@@ -143,23 +148,23 @@
 /* Hero headline */
 @utility heading-display {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 2.125rem;
   line-height: 1.1;
-  letter-spacing: -0.025em;
-  @media (width >= 48rem) { font-size: 3rem; }
-  @media (width >= 80rem) { font-size: 3.5rem; }
+  letter-spacing: -0.03em;
+  @media (width >= 48rem) { font-size: 3.125rem; }
+  @media (width >= 80rem) { font-size: 3.625rem; }
 }
 
 /* Section titles — editorial, never oversized */
 @utility heading-section {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: 1.625rem;
-  line-height: 1.2;
+  font-size: 1.375rem;
+  line-height: 1.25;
   letter-spacing: -0.02em;
-  @media (width >= 48rem) { font-size: 1.875rem; }
-  @media (width >= 80rem) { font-size: 2.125rem; }
+  @media (width >= 48rem) { font-size: 1.5rem; }
+  @media (width >= 80rem) { font-size: 1.75rem; }
 }
 
 /* Serif titles inside cards (shops, bazaars, wanted) */
@@ -241,6 +246,76 @@
   @keyframes header-elevate {
     from { box-shadow: 0 0 0 rgb(23 33 27 / 0); }
     to { box-shadow: 0 1px 0 rgb(23 33 27 / 0.05), 0 10px 24px -18px rgb(23 33 27 / 0.3); }
+  }
+
+  /* Frosted glass used on the hero (stats panel, search frame, chips) */
+  .glass-dark {
+    background: rgb(4 30 23 / 0.28);
+    border: 1px solid rgb(255 255 255 / 0.22);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
+  .glass-light {
+    background: rgb(255 253 248 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.75);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%);
+  }
+
+  /* ---------- Surfaces ----------
+     Real-marketplace surfaces: white cards, hairline borders, almost no
+     shadow. The class names are kept (glass-*) so components don't churn,
+     but they now render flat and honest — content does the work. */
+
+  .glass-card {
+    background: #ffffff;
+    border: 1px solid var(--color-line);
+    box-shadow: 0 1px 2px rgb(23 33 27 / 0.04);
+  }
+  .glass-card-hover {
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .glass-card-hover:hover {
+    border-color: var(--color-line-strong);
+    box-shadow: 0 6px 18px -10px rgb(23 33 27 / 0.22);
+  }
+
+  /* Quiet inset panel (spec cells, stat boxes) */
+  .glass-inset {
+    background: var(--color-cream);
+    border: 1px solid var(--color-line);
+  }
+
+  /* Chips on photos: solid, readable */
+  .glass-pill {
+    background: rgb(255 255 255 / 0.96);
+    border: 1px solid rgb(23 33 27 / 0.06);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.14);
+  }
+  .glass-pill-dark {
+    background: rgb(12 22 17 / 0.72);
+  }
+
+  /* Caption on photo tiles — kept for compatibility */
+  .glass-caption {
+    background: rgb(12 22 17 / 0.6);
+  }
+
+  /* Cards on the dark footer / trust areas */
+  .glass-dark-card {
+    background: rgb(255 255 255 / 0.05);
+    border: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  /* Deep green band — solid, no glows */
+  .section-deep {
+    background-color: var(--color-forest);
+  }
+
+  /* Tabs / filters */
+  .glass-segment {
+    background: #ffffff;
+    border: 1px solid var(--color-line);
   }
 
   /* Skeleton shimmer */

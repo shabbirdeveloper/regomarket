@@ -2,21 +2,22 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
- * The "O" of REGOMARKET: a gold ring framing a snow-capped Karakoram peak.
- * Sized in `em` so it always matches the wordmark's cap height.
+ * Brand mark: a Karakoram skyline drawn in one confident line — two peaks,
+ * the taller one carrying a gold snow ridge.
  */
-function MountainO({ dark }: { dark?: boolean }) {
-  const id = dark ? "rego-o-d" : "rego-o";
+export function MountainLogoMark({ dark, className }: { dark?: boolean; className?: string }) {
+  const ink = dark ? "#FFFFFF" : "#064E3B";
   return (
-    <svg viewBox="0 0 40 40" aria-hidden className="mx-[0.02em] inline-block h-[0.72em] w-[0.72em] align-[-0.01em]">
-      <circle cx="20" cy="20" r="17" fill="none" stroke="#C79A42" strokeWidth="5" />
-      <clipPath id={id}>
-        <circle cx="20" cy="20" r="14.5" />
-      </clipPath>
-      <g clipPath={`url(#${id})`}>
-        <path d="M2 34 13.5 17l5 6 6.5-11L38 34Z" fill={dark ? "#E3C27E" : "#064E3B"} />
-        <path d="m22.4 16.3 2.6-4.3 3.2 5.4-2.1-.9-1.6 1.6-1-1.8Z" fill="#FFFDF8" />
-      </g>
+    <svg viewBox="0 0 52 32" aria-hidden className={cn("h-8 w-[52px] shrink-0", className)} fill="none">
+      <path
+        d="M2 29 L17 9.5 L24.5 18.5 L32.5 5 L50 29"
+        stroke={ink}
+        strokeWidth="3.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M27.4 13.6 L32.5 5 L37.2 12.9 L34.3 11.4 L32.4 13.5 L30.2 11.6 Z" fill="#C79A42" />
+      <path d="M11 29 L17 21 L21 26" stroke={ink} strokeOpacity="0.45" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -26,8 +27,8 @@ export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 40 40" className={cn("size-10", className)} aria-hidden>
       <rect width="40" height="40" rx="9" fill="#064E3B" />
-      <circle cx="20" cy="20" r="12.5" fill="none" stroke="#C79A42" strokeWidth="3" />
-      <path d="M10.5 28 17 19l3 3.5 4-6.5 5.5 12Z" fill="#E3C27E" />
+      <path d="M6 29 L15.5 16.5 L20 22 L25.5 12.5 L34 29" fill="none" stroke="#FFFFFF" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M22.9 17 L25.5 12.5 L28 16.7 L26.4 15.9 L25.4 17 L24.2 16 Z" fill="#E3C27E" />
     </svg>
   );
 }
@@ -43,27 +44,24 @@ export function Logo({
 }) {
   const dark = tone === "dark";
   return (
-    <Link href="/" className={cn("flex shrink-0 flex-col leading-none", className)} aria-label="REGOMARKET — home">
-      <span
-        className={cn(
-          "whitespace-nowrap font-serif text-[21px] font-bold tracking-[-0.02em] sm:text-[23px] lg:text-[25px]",
-          dark ? "text-white" : "text-mountain",
-        )}
-      >
-        REG
-        <MountainO dark={dark} />
-        <span className={dark ? "text-gold-soft" : "text-gold"}>MARKET</span>
-      </span>
-      {showTagline && (
-        <span
-          className={cn(
-            "mt-1 hidden text-[10.5px] font-medium uppercase tracking-[0.14em] sm:block",
-            dark ? "text-white/60" : "text-muted",
-          )}
-        >
-          Gilgit-Baltistan Marketplace
+    <Link href="/" className={cn("flex shrink-0 items-center gap-2.5", className)} aria-label="REGOMARKET — home">
+      <MountainLogoMark dark={dark} className="h-7 w-[46px] sm:h-8 sm:w-[52px]" />
+      <span className="flex flex-col leading-none">
+        <span className="whitespace-nowrap font-sans text-[20px] font-bold tracking-[-0.02em] sm:text-[22px] lg:text-[24px]">
+          <span className={dark ? "text-white" : "text-mountain"}>REGO</span>
+          <span className={cn("ml-[0.12em]", dark ? "text-gold-soft" : "text-gold")}>MARKET</span>
         </span>
-      )}
+        {showTagline && (
+          <span
+            className={cn(
+              "mt-1 hidden text-[9.5px] font-semibold uppercase tracking-[0.16em] sm:block",
+              dark ? "text-white/65" : "text-ink/70",
+            )}
+          >
+            Gilgit-Baltistan Marketplace
+          </span>
+        )}
+      </span>
     </Link>
   );
 }

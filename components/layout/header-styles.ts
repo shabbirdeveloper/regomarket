@@ -1,7 +1,7 @@
-/** Icon-only header actions: 40px hit area, 20px Lucide icon, tooltip on hover/focus. */
+/** Icon-only header actions: 40px hit area, 21px Lucide icon, tooltip on hover/focus. */
 export const headerIconCls =
-  "tip relative grid size-10 place-items-center rounded-md text-ink/75 transition-colors hover:bg-stone hover:text-mountain";
+  "tip relative grid size-10 place-items-center rounded-full text-ink/80 transition-colors hover:bg-stone hover:text-mountain";
 
-/** Small count bubble on header icons */
+/** Small red count bubble on header icons */
 export const headerCountCls =
-  "absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] font-semibold leading-none";
+  "absolute right-0.5 top-0.5 grid h-[17px] min-w-[17px] place-items-center rounded-full bg-[#D92D20] px-1 text-[10px] font-bold leading-none text-white ring-2 ring-paper";

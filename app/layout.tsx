@@ -55,8 +55,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en-PK" className={`${poppins.variable}`}>
-      <body>
+    <html lang="en-PK" className={poppins.variable}>
+      <body id="top">
         <JsonLd data={organizationLd()} />
         <SiteShell>{children}</SiteShell>
       </body>

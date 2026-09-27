@@ -1,25 +1,19 @@
-// Server-only: uses the filesystem to check whether a declared photo exists.
-import { existsSync } from "node:fs";
-import path from "node:path";
 import type { Media } from "@/types";
+import publicFiles from "./public-files.json";
 
-const cache = new Map<string, boolean>();
+const available = new Set<string>(publicFiles);
 
 /**
  * Local photos (/images/...) are only used once the file has been added to
- * /public. Remote URLs (Cloudinary / Supabase Storage) pass through as-is.
+ * /public (see scripts/list-public.mjs, which runs before dev and build).
+ * Remote URLs (Cloudinary / Supabase Storage) pass through as-is.
  * Missing files resolve to `src: null` so the UI shows a designed placeholder
  * rather than a broken image.
  */
 export function resolveMedia(media: Media): Media {
   if (!media.src) return media;
   if (/^https?:\/\//.test(media.src)) return media;
-  let exists = cache.get(media.src);
-  if (exists === undefined) {
-    exists = existsSync(path.join(process.cwd(), "public", media.src));
-    cache.set(media.src, exists);
-  }
-  return exists ? media : { ...media, src: null };
+  return available.has(media.src) ? media : { ...media, src: null };
 }
 
 /**

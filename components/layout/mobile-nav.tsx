@@ -19,7 +19,7 @@ export function MobileNav() {
   return (
     <nav
       aria-label="Quick navigation"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-paper pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden"
     >
       <ul className="mx-auto grid h-16 max-w-md grid-cols-5">
         {items.map(({ href, label, Icon, primary }) => {
@@ -28,7 +28,7 @@ export function MobileNav() {
             return (
               <li key={href} className="relative flex justify-center">
                 <Link href={href} className="group -mt-6 flex flex-col items-center gap-1" aria-label="Sell — post a free ad">
-                  <span className="grid size-14 place-items-center rounded-full bg-mountain text-white shadow-[0_10px_22px_-10px_rgb(4_56_44/0.7)] ring-4 ring-paper transition-transform group-active:scale-95">
+                  <span className="grid size-14 place-items-center rounded-full bg-mountain text-white ring-4 ring-white transition-transform group-active:scale-95">
                     <Icon className="size-6" strokeWidth={2.2} aria-hidden />
                   </span>
                   <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-mountain">Sell</span>

@@ -62,9 +62,9 @@ export function LivestockCard({ listing }: { listing: ListingCardData }) {
           </p>
         </div>
 
-        <dl className="mt-4 grid grid-cols-2 border-t border-line">
+        <dl className="glass-inset mt-4 grid grid-cols-2 overflow-hidden rounded-lg">
           {specs.map((s, i) => (
-            <div key={s.k} className={cn("border-b border-line py-2.5", i % 2 === 0 ? "pr-3" : "border-l pl-3")}>
+            <div key={s.k} className={cn("px-3 py-2.5", i < 2 && "border-b border-white/80", i % 2 === 1 && "border-l border-white/80")}>
               <dt className="text-[11.5px] font-medium uppercase tracking-[0.08em] text-muted">{s.k}</dt>
               <dd className="mt-0.5 truncate text-[14px] font-medium text-ink">{s.v}</dd>
             </div>

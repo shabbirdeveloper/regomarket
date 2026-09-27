@@ -42,12 +42,13 @@ export function FeaturedListings({ listings, titleId }: { listings: ListingCardD
       <SectionHeader
         id={titleId}
         eyebrow="Across Gilgit-Baltistan"
-        title="Featured Listings"
-        description="Hand-picked from verified sellers — property, vehicles, electronics and more."
-        action={{ label: `View all ${active.key === "latest" ? "listings" : active.label.toLowerCase()}`, href: active.href }}
+        title="Latest ads in GB"
+        description="Posted today and this week by people and shops across Gilgit-Baltistan."
+        action={{ label: "See all", href: active.href }}
       />
 
-      <div role="tablist" aria-label="Filter featured listings" className="rail -mx-4 mt-8 gap-6 border-b border-line px-4 sm:mx-0 sm:px-0">
+      <div className="-mx-4 mt-6 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+      <div role="tablist" aria-label="Filter featured listings" className="inline-flex gap-2">
         {TABS.map((t, i) => {
           const selected = t.key === tab;
           return (
@@ -65,9 +66,8 @@ export function FeaturedListings({ listings, titleId }: { listings: ListingCardD
               onClick={() => setTab(t.key)}
               onKeyDown={(e) => onKeyDown(e, i)}
               className={cn(
-                "relative h-11 shrink-0 text-[14px] font-medium transition-colors",
-                "after:absolute after:inset-x-0 after:-bottom-px after:h-[2px] after:bg-mountain after:transition-transform after:duration-300",
-                selected ? "text-ink after:scale-x-100" : "text-muted after:scale-x-0 hover:text-ink",
+                "h-9 shrink-0 rounded-md border px-3.5 text-[13.5px] font-medium transition-colors",
+                selected ? "border-ink bg-ink text-white" : "border-line bg-white text-ink/75 hover:border-ink/40 hover:text-ink",
               )}
             >
               {t.label}
@@ -75,8 +75,9 @@ export function FeaturedListings({ listings, titleId }: { listings: ListingCardD
           );
         })}
       </div>
+      </div>
 
-      <div role="tabpanel" id={`${baseId}-panel`} aria-labelledby={`${baseId}-tab-${tab}`} className="mt-8">
+      <div role="tabpanel" id={`${baseId}-panel`} aria-labelledby={`${baseId}-tab-${tab}`} className="mt-6">
         {items.length ? (
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
             {items.map((l) => (

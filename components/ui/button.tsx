@@ -14,13 +14,13 @@ import { cn } from "@/lib/utils";
  * Use `buttonVariants()` on <Link> for navigational CTAs.
  */
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md font-semibold transition-[background-color,border-color,color,box-shadow] duration-200 ease-out disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg font-semibold transition-[background-color,border-color,color,box-shadow] duration-200 ease-out disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary: "bg-mountain text-white hover:bg-mountain-hover",
-        secondary: "border border-mountain/35 bg-paper text-ink hover:border-mountain hover:bg-mint",
-        premium: "bg-forest text-white ring-1 ring-inset ring-gold/70 hover:bg-deep hover:ring-gold",
+        secondary: "border border-line-strong bg-white text-ink hover:border-ink/40",
+        premium: "bg-forest text-white hover:bg-deep",
         ghost: "text-mountain hover:bg-mint",
         light: "bg-paper text-forest hover:bg-white",
         "outline-light": "border border-white/35 text-white hover:border-white hover:bg-white/10",
@@ -32,7 +32,7 @@ export const buttonVariants = cva(
         outline: "border border-line bg-paper text-ink hover:border-line-strong",
       },
       size: {
-        sm: "h-9 rounded-sm px-3.5 text-[13px] [&_svg]:size-4",
+        sm: "h-9 rounded-md px-3.5 text-[13px] [&_svg]:size-4",
         md: "h-11 px-5 text-[14px] [&_svg]:size-[18px]",
         lg: "h-[52px] px-6 text-[15px] [&_svg]:size-5",
         icon: "size-11 [&_svg]:size-5",

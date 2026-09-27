@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  *   wanted    — gold wash: buyer demand
  */
 export const badgeVariants = cva(
-  "inline-flex items-center gap-1 whitespace-nowrap rounded-xs font-semibold leading-none [&_svg]:size-3.5 [&_svg]:shrink-0",
+  "inline-flex items-center gap-1 whitespace-nowrap rounded-md font-semibold leading-none [&_svg]:size-3.5 [&_svg]:shrink-0",
   {
     variants: {
       tone: {
@@ -24,8 +24,8 @@ export const badgeVariants = cva(
         wanted: "bg-gold-wash text-gold-ink",
         neutral: "bg-stone text-muted",
         /** Solid chip for use on top of photos */
-        overlay: "bg-paper/95 text-ink shadow-hairline",
-        dark: "bg-deep/80 text-white",
+        overlay: "glass-pill text-ink",
+        dark: "glass-pill-dark text-white",
       },
       size: {
         sm: "h-[22px] px-2 text-[11.5px]",

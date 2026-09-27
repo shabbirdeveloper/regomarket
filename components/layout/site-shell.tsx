@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AnnouncementBar } from "./announcement-bar";
 import { Header } from "./header";
 import { Footer } from "./footer";
 import { MobileNav } from "./mobile-nav";
@@ -13,6 +14,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
+      <AnnouncementBar />
       <Header />
       <main id="main" className="min-h-[60vh]">
         {children}

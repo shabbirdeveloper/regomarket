@@ -1,8 +1,26 @@
-import type { Category } from "@/types";
+import type { Category, Media } from "@/types";
+import { unsplash } from "./media";
+
+/**
+ * 3D category icons from Microsoft Fluent Emoji (MIT licence), served from the
+ * jsDelivr CDN. To self-host, download the PNGs into /public/images/icons and
+ * point `src` there.
+ */
+function fluent3d(name: string): Media {
+  const file = name.toLowerCase().replace(/ /g, "_");
+  return {
+    src: `https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/${encodeURIComponent(name)}/3D/${file}_3d.png`,
+    alt: "",
+    width: 256,
+    height: 256,
+  };
+}
 
 export const categories: Category[] = [
   {
     slug: "dry-fruits",
+    image: unsplash("photo-1723110565328-9dbeef603d19", "", 400, 400),
+    icon3d: fluent3d("Peach"),
     name: "Dry Fruits & Local Products",
     shortName: "Dry Fruits",
     icon: "apricot",
@@ -12,6 +30,8 @@ export const categories: Category[] = [
   },
   {
     slug: "livestock",
+    image: unsplash("photo-1588466585717-f8041aec7875", "", 400, 400),
+    icon3d: fluent3d("Goat"),
     name: "Livestock",
     shortName: "Livestock",
     icon: "goat",
@@ -21,6 +41,8 @@ export const categories: Category[] = [
   },
   {
     slug: "agriculture",
+    image: unsplash("photo-1623428453655-44feea11454b", "", 400, 400),
+    icon3d: fluent3d("Herb"),
     name: "Agriculture & Farm",
     shortName: "Agriculture",
     icon: "wheat",
@@ -30,6 +52,8 @@ export const categories: Category[] = [
   },
   {
     slug: "property",
+    image: unsplash("photo-1616382120760-54c1f5bab434", "", 400, 400),
+    icon3d: fluent3d("House"),
     name: "Property & Land",
     shortName: "Property",
     icon: "land",
@@ -39,6 +63,8 @@ export const categories: Category[] = [
   },
   {
     slug: "vehicles",
+    image: unsplash("photo-1610064095022-db1b488c05f1", "", 400, 400),
+    icon3d: fluent3d("Sport utility vehicle"),
     name: "Vehicles",
     shortName: "Vehicles",
     icon: "car",
@@ -48,6 +74,8 @@ export const categories: Category[] = [
   },
   {
     slug: "electronics",
+    image: unsplash("photo-1695822822491-d92cee704368", "", 400, 400),
+    icon3d: fluent3d("Laptop"),
     name: "Electronics & Mobiles",
     shortName: "Electronics",
     icon: "phone",
@@ -57,6 +85,8 @@ export const categories: Category[] = [
   },
   {
     slug: "home",
+    image: unsplash("photo-1608463123864-40a2961b7d00", "", 400, 400),
+    icon3d: fluent3d("Couch and lamp"),
     name: "Home & Used Items",
     shortName: "Home",
     icon: "sofa",
@@ -66,6 +96,8 @@ export const categories: Category[] = [
   },
   {
     slug: "cameras-gear",
+    image: unsplash("photo-1571863533956-01c88e79957e", "", 400, 400),
+    icon3d: fluent3d("Camping"),
     name: "Cameras & Outdoor Gear",
     shortName: "Outdoor Gear",
     icon: "tent",
@@ -75,6 +107,8 @@ export const categories: Category[] = [
   },
   {
     slug: "handicrafts",
+    image: unsplash("photo-1550045178-5df4d0ae22d0", "", 400, 400),
+    icon3d: fluent3d("Amphora"),
     name: "Handicrafts & Clothing",
     shortName: "Handicrafts",
     icon: "shirt",
@@ -84,6 +118,8 @@ export const categories: Category[] = [
   },
   {
     slug: "machinery",
+    image: unsplash("photo-1683552515328-5a8d58755e9c", "", 400, 400),
+    icon3d: fluent3d("Tractor"),
     name: "Machinery & Tools",
     shortName: "Machinery",
     icon: "tractor",
@@ -93,6 +129,7 @@ export const categories: Category[] = [
   },
   {
     slug: "services",
+    icon3d: fluent3d("Hammer and wrench"),
     name: "Local Services",
     shortName: "Services",
     icon: "handshake",

@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // Unsplash — interim photography (free commercial licence) until sellers upload their own
       { protocol: "https", hostname: "images.unsplash.com" },
+      // Fluent Emoji 3D category icons (MIT) via jsDelivr
+      { protocol: "https", hostname: "cdn.jsdelivr.net", pathname: "/gh/microsoft/**" },
       // Cloudinary (media CDN) — see lib/media.ts
       { protocol: "https", hostname: "res.cloudinary.com" },
       // Supabase Storage

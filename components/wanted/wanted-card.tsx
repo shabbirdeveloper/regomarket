@@ -1,73 +1,150 @@
 import Link from "next/link";
-import { BadgeCheck, Send } from "lucide-react";
+import { ArrowRight, BadgeCheck, Boxes, CalendarClock, MapPin, Package, Scale, ShoppingBag } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { WantedCardData } from "@/types";
+import { categoryBySlug } from "@/data/categories";
 import { formatBudget, placeLabel } from "@/lib/format";
 import { routes } from "@/lib/site";
-import { buttonVariants } from "@/components/ui/button";
 import { cardVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+const MODE: Record<WantedCardData["mode"], { Icon: LucideIcon; cls: string }> = {
+  Wholesale: { Icon: Package, cls: "bg-gold-wash text-gold-ink ring-gold/25" },
+  Bulk: { Icon: Boxes, cls: "bg-mint text-mountain ring-mountain/15" },
+  Retail: { Icon: ShoppingBag, cls: "bg-[#e9f2f7] text-[#2b5c78] ring-[#2b5c78]/15" },
+  Rent: { Icon: CalendarClock, cls: "bg-[#f6ece6] text-[#8a4b32] ring-[#8a4b32]/15" },
+};
+
+const AVATAR_TONES = ["bg-[#2f6f57]", "bg-[#a0773a]", "bg-[#3e7391]", "bg-[#a86448]", "bg-[#5d7566]"];
+
+/** Stable colour per name, so the same buyer always looks the same. */
+function toneFor(seed: string) {
+  let h = 0;
+  for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return AVATAR_TONES[h % AVATAR_TONES.length];
+}
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("");
+
+/** Tiny stacked circles standing in for the sellers who already replied. */
+const RESPONDERS = ["H", "S", "M", "Z", "A"];
+
 /**
- * A buyer's request. Text-first with a muted gold header strip so it reads
- * as *demand*, never as a product for sale.
+ * A buyer's request, written like a post from a real person: who is asking,
+ * what they want, what they'll pay — and how many sellers already answered.
  */
 export function WantedCard({ request }: { request: WantedCardData }) {
-  const rows = [
-    { k: "Location", v: placeLabel(request.place, { withTown: true }) },
-    { k: "Budget", v: formatBudget(request.budget), strong: true },
-    ...(request.quantity ? [{ k: "Quantity", v: request.quantity }] : []),
-  ];
+  const cat = categoryBySlug[request.category];
+  const mode = MODE[request.mode];
+  const fresh = /^(\d+)(m|h) ago$/.test(request.postedLabel) && parseInt(request.postedLabel) <= 6;
+  const shown = Math.min(3, request.offers);
 
   return (
-    <article className={cn(cardVariants({ variant: "notice" }), "flex h-full flex-col transition-colors hover:border-gold/70")}>
-      <div className="flex items-center justify-between gap-3 border-b border-gold/25 bg-gold-wash px-5 py-2.5">
-        <span className="eyebrow text-gold-ink">
-          Wanted <span aria-hidden>·</span> {request.mode}
+    <article
+      className={cn(
+        cardVariants({ variant: "plain" }),
+        "group flex h-full flex-col rounded-xl p-5 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)]",
+        "md:hover:-translate-y-1 md:hover:border-gold/40 md:hover:shadow-[0_28px_56px_-30px_rgb(23_33_27/0.45),0_2px_8px_rgb(23_33_27/0.05)]",
+        "md:focus-within:-translate-y-1 md:focus-within:border-gold/40",
+      )}
+    >
+      {/* Gold top edge that draws in on hover */}
+      <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] origin-left scale-x-0 bg-gradient-to-r from-gold to-gold-soft transition-transform duration-500 ease-out md:group-hover:scale-x-100" />
+      {/* Who is asking */}
+      <header className="flex items-start gap-3">
+        <span
+          aria-hidden
+          className={cn(
+            "grid size-10 shrink-0 place-items-center rounded-full text-[13px] font-semibold text-white",
+            toneFor(request.buyerName),
+          )}
+        >
+          {initials(request.buyerName)}
         </span>
-        <span className="text-[12px] text-gold-ink/80">{request.postedLabel}</span>
-      </div>
-
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="heading-card text-ink">
-          <Link href={routes.wanted(request.slug)} className="hover:text-mountain">
-            {request.title}
-          </Link>
-        </h3>
-
-        <dl className="mt-4 space-y-2 text-[14px]">
-          <div className="flex items-baseline gap-3">
-            <dt className="w-20 shrink-0 text-muted">Buyer</dt>
-            <dd className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-ink">
-              <span className="truncate font-medium">{request.buyerName}</span>
-              {request.buyerVerified && (
-                <span className="inline-flex items-center gap-0.5 text-[12.5px] font-medium text-success">
-                  <BadgeCheck className="size-3.5" aria-hidden />
-                  Verified {request.buyerType === "Business" ? "business" : "buyer"}
-                </span>
-              )}
-            </dd>
-          </div>
-          {rows.map((r) => (
-            <div key={r.k} className="flex items-baseline gap-3">
-              <dt className="w-20 shrink-0 text-muted">{r.k}</dt>
-              <dd className={cn("min-w-0 text-ink", r.strong ? "font-semibold" : "font-medium")}>{r.v}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="mt-auto flex items-center justify-between gap-3 pt-6">
-          <span className="text-[12.5px] text-muted">
-            <span className="font-semibold text-ink">{request.offers}</span> offers so far
-          </span>
-          <Link
-            href={`${routes.wanted(request.slug)}#offer`}
-            className={buttonVariants({ variant: "secondary", size: "sm" })}
-            aria-label={`Send offer: ${request.title}`}
-          >
-            <Send aria-hidden /> Send Offer
-          </Link>
+        <div className="min-w-0 flex-1">
+          <p className="flex items-center gap-1 text-[14.5px] font-semibold text-ink">
+            <span className="truncate">{request.buyerName}</span>
+            {request.buyerVerified && (
+              <BadgeCheck className="size-4 shrink-0 text-success" role="img" aria-label={`Verified ${request.buyerType === "Business" ? "business" : "buyer"}`} />
+            )}
+          </p>
+          <p className="mt-0.5 flex items-center gap-1.5 text-[12.5px] text-muted">
+            {fresh && <span className="size-1.5 rounded-full bg-success" aria-hidden />}
+            <span>{request.buyerType === "Business" ? "Business" : "Individual"}</span>
+            <span aria-hidden>·</span>
+            <span>{request.postedLabel}</span>
+          </p>
         </div>
+        <span className={cn("inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-semibold ring-1 ring-inset", mode.cls)}>
+          <mode.Icon className="size-3.5" aria-hidden />
+          {request.mode}
+        </span>
+      </header>
+
+      {/* What they want */}
+      <p className="mt-4 text-[12px] font-medium text-muted">{cat.shortName} · Looking for</p>
+      <h3 className="mt-0.5 text-[16.5px] font-semibold leading-snug tracking-[-0.01em] text-ink transition-colors md:group-hover:text-mountain">
+        <Link href={routes.wanted(request.slug)} className="focus-visible:outline-none after:absolute after:inset-0 after:content-['']">
+          {request.title}
+        </Link>
+      </h3>
+
+      <ul className="mt-3.5 flex flex-wrap gap-1.5 text-[12px] font-medium">
+        {request.quantity && (
+          <li className="inline-flex h-7 items-center gap-1.5 rounded-full bg-stone px-2.5 text-ink/80">
+            <Scale className="size-3.5 text-muted" aria-hidden />
+            {request.quantity}
+          </li>
+        )}
+        <li className="inline-flex h-7 items-center gap-1.5 rounded-full bg-stone px-2.5 text-ink/80">
+          <MapPin className="size-3.5 text-muted" aria-hidden />
+          {placeLabel(request.place, { withTown: true })}
+        </li>
+      </ul>
+
+      {/* What they'll pay */}
+      <div className="mt-4 flex items-baseline justify-between gap-3 rounded-lg bg-cream px-3.5 py-2.5 transition-colors md:group-hover:bg-mint">
+        <span className="text-[12px] font-medium text-muted">Budget</span>
+        <span className="text-right text-[16px] font-bold tracking-[-0.01em] text-mountain">{formatBudget(request.budget)}</span>
       </div>
+
+      {/* Social proof + action */}
+      <footer className="mt-auto flex items-center justify-between gap-3 pt-5">
+        <span className="flex items-center gap-2.5">
+          {shown > 0 && (
+            <span className="flex -space-x-2" aria-hidden>
+              {RESPONDERS.slice(0, shown).map((r) => (
+                <span
+                  key={r}
+                  className={cn(
+                    "grid size-7 place-items-center rounded-full text-[11px] font-semibold text-white ring-2 ring-white",
+                    toneFor(r + request.id),
+                  )}
+                >
+                  {r}
+                </span>
+              ))}
+            </span>
+          )}
+          <span className="text-[12.5px] leading-tight text-muted">
+            <span className="font-semibold text-ink">{request.offers}</span> {request.offers === 1 ? "seller" : "sellers"}
+            <br className="hidden sm:block" /> replied
+          </span>
+        </span>
+        <Link
+          href={`${routes.wanted(request.slug)}#offer`}
+          aria-label={`Send offer: ${request.title}`}
+          className="group/btn relative z-10 inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-mountain px-4 text-[13px] font-semibold text-mountain transition-colors hover:bg-mountain-hover hover:text-white md:group-hover:bg-mountain md:group-hover:text-white"
+        >
+          Send offer
+          <ArrowRight className="size-4 transition-transform md:group-hover:translate-x-0.5" aria-hidden />
+        </Link>
+      </footer>
     </article>
   );
 }

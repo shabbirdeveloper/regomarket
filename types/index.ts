@@ -105,6 +105,8 @@ export interface Category {
   tint: string;
   /** Illustrated icon shown in the category row */
   image?: Media;
+  /** 3D illustrated icon (Fluent Emoji 3D) for the homepage category row */
+  icon3d?: Media;
 }
 
 /* ---------- Trust ---------- */
@@ -172,6 +174,34 @@ export interface Shop {
   sellerId: string;
 }
 
+/** Longer storefront details shown on the shop page (Screen 05). */
+export interface ShopProfile {
+  about: string[];
+  founded: number;
+  payments: ("Cash on delivery" | "Easypaisa" | "JazzCash" | "Bank transfer" | "Cash at shop")[];
+  /** Where / how the shop delivers — or how pickup works */
+  deliveryNote: string;
+  /** Short, factual selling points ("Stone-ground", "7-day check warranty") */
+  highlights: string[];
+  /** Street-level address line for the About tab */
+  address: string;
+}
+
+export interface ShopReview {
+  id: string;
+  shopId: string;
+  author: string;
+  /** Town, District */
+  from: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+  postedAt: string; // ISO
+  text: string;
+  /** Listing slug the buyer bought / asked about */
+  item?: string;
+  /** Optional public reply from the shop */
+  reply?: string;
+}
+
 /* ---------- Listings ---------- */
 
 export type PriceUnit = "kg" | "maund" | "piece" | "month" | "day" | "litre" | "dozen" | "kanal" | "bottle";
@@ -229,7 +259,7 @@ export interface Listing {
 
 /** Listing joined with its seller — what cards render. */
 export interface ListingCardData extends Listing {
-  seller: Pick<Seller, "id" | "type" | "name" | "shopSlug" | "verifications" | "delivery">;
+  seller: Pick<Seller, "id" | "type" | "name" | "shopSlug" | "verifications" | "delivery" | "rating" | "reviewCount" | "deals">;
   postedLabel: string;
   /** True only when the seller is a shop with ordering enabled and the item can be shipped */
   orderable: boolean;
@@ -265,6 +295,10 @@ export interface WantedRequest {
   buyerVerified: boolean;
   postedAt: string;
   offers: number;
+  /** Free text from the buyer */
+  details?: string;
+  /** "Within 1 week" etc. */
+  needBy?: string;
 }
 
 export interface WantedCardData extends WantedRequest {

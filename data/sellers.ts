@@ -1,4 +1,5 @@
 import type { Seller } from "@/types";
+import { me } from "./account";
 
 export const sellers: Seller[] = [
   { id: "s-hunza-dfh", type: "shop", name: "Hunza Dry Fruits House", shopSlug: "hunza-dry-fruits-house", verifications: ["phone", "identity", "business", "rego"], memberSince: "2024-03-12", place: { district: "hunza", tehsil: "aliabad", town: "Aliabad" }, phoneMasked: "0355 •••• 214", whatsapp: true, rating: 4.8, reviewCount: 126, responseTime: "within 1 hour", acceptsOrders: true, delivery: true, deals: 640 },
@@ -20,4 +21,4 @@ export const sellers: Seller[] = [
   { id: "u-zahid-hussain", type: "individual", name: "Zahid Hussain", verifications: ["phone", "identity"], memberSince: "2024-10-19", place: { district: "nagar", town: "Chalt" }, phoneMasked: "0346 •••• 460", whatsapp: true },
 ];
 
-export const sellerById = Object.fromEntries(sellers.map((s) => [s.id, s])) as Record<string, Seller>;
+export const sellerById = Object.fromEntries([...sellers, me].map((s) => [s.id, s])) as Record<string, Seller>;

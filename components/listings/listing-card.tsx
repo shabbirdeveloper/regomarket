@@ -81,7 +81,7 @@ export function ListingCard({
         )}
 
         <div className="mt-auto pt-4">
-        <div className="flex items-center justify-between gap-3 border-t border-line pt-3">
+        <div className="flex items-center justify-between gap-3 border-t border-ink/[0.07] pt-3">
           <span className="flex min-w-0 items-center gap-1 text-[12px] text-muted">
             <span className="truncate">{isShop ? listing.seller.name : "Individual seller"}</span>
             {sellerVerified && <BadgeCheck className="size-3.5 shrink-0 text-success" role="img" aria-label="Verified seller" />}
@@ -89,7 +89,7 @@ export function ListingCard({
           {listing.orderable ? (
             <Link
               href={`/checkout?listing=${listing.slug}`}
-              className="relative z-10 -my-1 -mr-2 shrink-0 rounded-sm px-2 py-1 text-[12.5px] font-semibold text-mountain hover:bg-mint"
+              className="relative z-10 shrink-0 text-[12.5px] font-semibold text-mountain underline-offset-4 hover:underline"
             >
               Order now
             </Link>

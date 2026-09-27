@@ -5,6 +5,13 @@ const nf = new Intl.NumberFormat("en-US");
 
 export const formatNumber = (n: number) => nf.format(n);
 
+/** 12,622 → "12.6K", 1,426 → "1.4K", 306 → "300" (rounded down, for "+" counters) */
+export function formatCompact(n: number) {
+  if (n >= 1000) return `${(Math.floor(n / 100) / 10).toString()}K`;
+  if (n >= 100) return `${Math.floor(n / 50) * 50}`;
+  return `${n}`;
+}
+
 const UNIT_LABEL: Record<PriceUnit, string> = {
   kg: "KG",
   maund: "Maund",
@@ -68,4 +75,11 @@ export function timeAgo(iso: string, now = Date.now()) {
   const d = Math.floor(h / 24);
   if (d < 7) return `${d}d ago`;
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+/** 9:00 → "9 AM", 17:30 → "5:30 PM" */
+export function formatHour(hhmm: string) {
+  const [h, m] = hhmm.split(":").map(Number);
+  const hr = h % 12 || 12;
+  return `${hr}${m ? `:${String(m).padStart(2, "0")}` : ""} ${h < 12 ? "AM" : "PM"}`;
 }

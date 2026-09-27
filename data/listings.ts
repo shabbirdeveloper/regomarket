@@ -1,10 +1,12 @@
 import type { Listing } from "@/types";
 import { unsplash } from "./media";
+import { shopListings } from "./shop-listings";
+import { myListings } from "./account";
 
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000).toISOString();
 
 /** Realistic GB mock listings. Replaced by Supabase `listings` rows later. */
-export const listings: Listing[] = [
+const baseListings: Listing[] = [
   {
     id: "l-1001",
     slug: "organic-dry-apricot-premium-shigar",
@@ -12,7 +14,7 @@ export const listings: Listing[] = [
     category: "dry-fruits",
     place: { district: "shigar", town: "Shigar" },
     price: { amount: 1200, unit: "kg" },
-    images: [unsplash("photo-1723110565328-9dbeef603d19", "Sun-dried premium apricots from Shigar in a woven basket")],
+    images: [unsplash("photo-1723110565328-9dbeef603d19", "Sun-dried premium apricots from Shigar in a woven basket"), unsplash("photo-1583440772344-edd2e043742c", "Dry fruit stall with apricots in Shigar bazaar"), unsplash("photo-1748596499389-693c1f1569af", "Apricot orchard in Shigar")],
     badges: ["featured", "wholesale"],
     tag: "Wholesale",
     wholesale: true,
@@ -29,7 +31,7 @@ export const listings: Listing[] = [
     category: "livestock",
     place: { district: "skardu", town: "Hussainabad" },
     price: { amount: 65000, negotiable: true },
-    images: [unsplash("photo-1588466585717-f8041aec7875", "Healthy two-year-old local male goat in Skardu")],
+    images: [unsplash("photo-1588466585717-f8041aec7875", "Healthy two-year-old local male goat in Skardu"), unsplash("photo-1704571166240-a9a811a87ca3", "The goat with the herd on a pasture"), unsplash("photo-1579962568308-35dfb6da73f4", "Livestock market in Astore")],
     badges: ["verified"],
     tag: "Negotiable",
     sellerId: "u-ghulam-abbas",
@@ -59,7 +61,7 @@ export const listings: Listing[] = [
     category: "dry-fruits",
     place: { district: "hunza", tehsil: "aliabad", town: "Aliabad" },
     price: { amount: 1800, unit: "kg" },
-    images: [unsplash("photo-1635843108103-9af0ea224a19", "Thin-shell Hunza walnuts in a jute sack")],
+    images: [unsplash("photo-1635843108103-9af0ea224a19", "Thin-shell Hunza walnuts in a jute sack"), unsplash("photo-1583440772344-edd2e043742c", "Walnuts and dry fruits at the shop in Aliabad")],
     badges: ["wholesale"],
     tag: "Wholesale",
     wholesale: true,
@@ -76,7 +78,7 @@ export const listings: Listing[] = [
     category: "vehicles",
     place: { district: "skardu", town: "Skardu City" },
     price: { amount: 85_000_000 },
-    images: [unsplash("photo-1610064094665-57e727e29f8b", "White Toyota Land Cruiser Prado 2021 parked in Skardu")],
+    images: [unsplash("photo-1670736297573-fde2cbcf1de7", "White Toyota Land Cruiser Prado 2021 parked in Skardu")],
     badges: [],
     tag: "Verified",
     condition: "used",
@@ -108,7 +110,7 @@ export const listings: Listing[] = [
     category: "dry-fruits",
     place: { district: "nagar", town: "Hopar" },
     price: { amount: 3800, unit: "kg" },
-    images: [unsplash("photo-1587049352851-8d4e89133924", "Jars of raw wild honey from Hopar valley, Nagar")],
+    images: [unsplash("photo-1587049352851-8d4e89133924", "Jars of raw wild honey from Hopar valley, Nagar"), unsplash("photo-1586779161164-d89795b07b71", "Honey and herbs at the shop in Nagar")],
     badges: ["featured", "verified"],
     tag: "Lab tested",
     delivery: true,
@@ -379,7 +381,7 @@ export const listings: Listing[] = [
     category: "livestock",
     place: { district: "astore", town: "Rattu" },
     price: { amount: 330_000, negotiable: true },
-    images: [unsplash("photo-1704571166240-a9a811a87ca3", "Six local goats on a pasture in Rattu, Astore")],
+    images: [unsplash("photo-1704571166240-a9a811a87ca3", "Six local goats on a pasture in Rattu, Astore"), unsplash("photo-1588466585717-f8041aec7875", "One of the goats up close")],
     badges: ["wholesale"],
     tag: "Bulk",
     wholesale: true,
@@ -406,3 +408,6 @@ export const listings: Listing[] = [
     produce: { grade: "A Grade", harvestYear: 2026, quantityAvailable: "200 KG" },
   },
 ];
+
+/** Every ad on the site: the original mix plus each shop's fuller catalogue. */
+export const listings: Listing[] = [...baseListings, ...shopListings, ...myListings];
