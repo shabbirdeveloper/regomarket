@@ -10,7 +10,7 @@ const items = [
 /** Thin promo strip above the header — three useful promises, not slogans. */
 export function AnnouncementBar() {
   return (
-    <div className="bg-forest text-white">
+    <div className="bg-forest text-white print:hidden">
       <ul className="shell grid h-10 grid-cols-1 items-center md:grid-cols-3">
         {items.map(({ Icon, title, sub, href }, i) => (
           <li key={title} className={i > 0 ? "hidden md:block" : undefined}>

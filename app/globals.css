@@ -347,3 +347,16 @@
   }
   .tip:hover::after, .tip:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
 }
+
+/* ---------- Print (packing slips, receipts): only the page content ---------- */
+@media print {
+  .site-header,
+  footer,
+  nav[aria-label="Quick navigation"],
+  a[href="#main"] {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+}

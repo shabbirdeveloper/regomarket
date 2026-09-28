@@ -86,6 +86,7 @@ function Account() {
   };
 
   const shortcuts = [
+    ...(profile.type === "shop" || profile.shopSlug ? [{ href: "/shop-orders", Icon: Store, label: "Shop orders", note: "Confirm, ship and get paid" }] : []),
     { href: "/orders", Icon: Package, label: "My orders", note: orders === null ? "…" : orders ? `${orders} order${orders === 1 ? "" : "s"}` : "Nothing yet" },
     { href: "/cart", Icon: Tag, label: "Cart", note: "Items you picked" },
     { href: "/notifications", Icon: Bell, label: "Notifications", note: "Order and ad updates" },
