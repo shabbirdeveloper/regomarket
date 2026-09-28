@@ -70,6 +70,17 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
     else if (auth.profile && step !== "profile") router.replace(next);
   }, [auth.loading, auth.user, auth.needsProfile, auth.profile, step, next, router]);
 
+  // Came back from an expired / used email link → say so
+  useEffect(() => {
+    const h = new URLSearchParams(window.location.hash.slice(1));
+    const q = new URLSearchParams(window.location.search);
+    const msg = h.get("error_description") ?? q.get("error_description");
+    if (msg) {
+      setError(/expired|invalid/i.test(msg) ? "That sign-in link has expired or was already used. Ask for a new code." : msg.replace(/\+/g, " "));
+      window.history.replaceState(null, "", window.location.pathname + (q.get("next") ? `?next=${encodeURIComponent(q.get("next")!)}` : ""));
+    }
+  }, []);
+
   // Resend countdown
   useEffect(() => {
     if (wait <= 0) return;
@@ -94,7 +105,11 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
     setBusy(true);
     try {
       if (db) {
-        const { error: err } = await db.auth.signInWithOtp({ email: clean, options: { shouldCreateUser: true } });
+        const { error: err } = await db.auth.signInWithOtp({
+          email: clean,
+          // If someone taps the link in the email instead of typing the code, bring them back here
+          options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/login?next=${encodeURIComponent(next)}` },
+        });
         if (err) throw err;
       } else {
         await new Promise((r) => setTimeout(r, 600));

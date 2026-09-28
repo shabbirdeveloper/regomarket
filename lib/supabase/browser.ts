@@ -6,6 +6,9 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  * refreshed automatically. Every read and write is protected by Row Level
  * Security in the database, so this public key can't see other people's data.
  *
+ * detectSessionInUrl: the sign-in link in the email (as well as the 6-digit
+ * code) also works: the tokens in the link are read once and removed.
+ *
  * Returns null when Supabase isn't configured (local preview without .env.local).
  */
 let client: SupabaseClient | null | undefined;
@@ -17,7 +20,7 @@ export function supabaseBrowser(): SupabaseClient | null {
   client =
     typeof window !== "undefined" && url && key
       ? createClient(url, key, {
-          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: "rego-auth" },
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "rego-auth" },
         })
       : null;
   return client;
