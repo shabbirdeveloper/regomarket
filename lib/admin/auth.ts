@@ -21,7 +21,9 @@ const MAX_AGE = 60 * 60 * 12;
 const MIN_LENGTH = 12;
 
 function password() {
-  const p = process.env.ADMIN_PASSWORD ?? "";
+  // Forgive copy/paste slips: surrounding spaces, or quotes that some
+  // terminals (Windows cmd with '…') store as part of the value.
+  const p = (process.env.ADMIN_PASSWORD ?? "").trim().replace(/^(['"])(.*)\1$/, "$2");
   return p.length >= MIN_LENGTH && p !== "not-set" ? p : null;
 }
 
@@ -70,7 +72,7 @@ export async function requireAdmin(): Promise<AdminSession> {
 export async function signInAdmin(input: string): Promise<boolean> {
   const p = password();
   if (!p) return false;
-  const ok = same(token(input), token(p));
+  const ok = same(token(input.trim()), token(p));
   if (!ok) {
     // Slow down guessing
     await new Promise((r) => setTimeout(r, 900));
