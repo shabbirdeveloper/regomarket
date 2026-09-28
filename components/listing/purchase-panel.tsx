@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { MessageCircle, Minus, Phone, Plus, ShoppingBag } from "lucide-react";
+import { Check, MessageCircle, Minus, Phone, Plus, ShoppingBag, ShoppingCart } from "lucide-react";
+import { cart } from "@/lib/cart";
 import { WhatsAppIcon } from "@/components/common/brand-icons";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +17,7 @@ const nf = new Intl.NumberFormat("en-US");
  */
 export function PurchasePanel({
   slug,
+  item,
   amount,
   unit,
   orderable,
@@ -23,6 +26,8 @@ export function PurchasePanel({
   sellerName,
 }: {
   slug: string;
+  /** What goes into the cart (orderable items only) */
+  item?: { listingId: string; title: string; image: string | null; sellerId: string; shopName: string; shopSlug?: string; shopDistrict: string };
   amount: number;
   /** e.g. "KG" — enables weight presets */
   unit?: string;
@@ -32,8 +37,11 @@ export function PurchasePanel({
   sellerName: string;
 }) {
   const presets = unit === "KG" ? [1, 5, 10, 20] : [];
+  const router = useRouter();
   const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
+  const line = item ? { ...item, slug, price: amount, unit } : null;
   const total = amount * qty;
   const label = unit ? unit : qty === 1 ? "item" : "items";
 
@@ -92,13 +100,42 @@ export function PurchasePanel({
         </div>
 
         <div className="grid gap-2.5">
-          <Link
-            href={`/checkout?listing=${slug}&qty=${qty}`}
-            className="flex h-14 items-center justify-center gap-2 rounded-full bg-mountain text-[16px] font-semibold text-white shadow-[0_12px_24px_-12px_rgb(6_78_59/0.7)] transition-colors hover:bg-mountain-hover"
-          >
-            <ShoppingBag className="size-5" aria-hidden />
-            Order now · Rs {nf.format(total)}
-          </Link>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <button
+              type="button"
+              disabled={!line}
+              onClick={() => {
+                if (!line) return;
+                cart.add(line, qty);
+                setAdded(true);
+              }}
+              className="flex h-14 items-center justify-center gap-2 rounded-full border-2 border-mountain bg-white text-[15.5px] font-semibold text-mountain transition-colors hover:bg-mint disabled:opacity-50"
+            >
+              {added ? <Check className="size-5" aria-hidden /> : <ShoppingCart className="size-5" aria-hidden />}
+              {added ? "Added" : "Add to cart"}
+            </button>
+            <button
+              type="button"
+              disabled={!line}
+              onClick={() => {
+                if (!line) return;
+                cart.set(line, qty);
+                router.push(`/checkout?buy=${encodeURIComponent(line.listingId)}`);
+              }}
+              className="flex h-14 items-center justify-center gap-2 rounded-full bg-mountain text-[15.5px] font-semibold text-white shadow-[0_12px_24px_-12px_rgb(6_78_59/0.7)] transition-colors hover:bg-mountain-hover disabled:opacity-50"
+            >
+              <ShoppingBag className="size-5" aria-hidden />
+              Buy now
+            </button>
+          </div>
+          {added && (
+            <p role="status" className="flex items-center justify-center gap-2 rounded-xl bg-mint px-4 py-2.5 text-[13.5px] text-mountain">
+              <Check className="size-4" aria-hidden /> In your cart ·{" "}
+              <Link href="/cart" className="font-semibold underline underline-offset-4">
+                View cart
+              </Link>
+            </p>
+          )}
           <Link
             href={`/messages?listing=${slug}`}
             className="flex h-12 items-center justify-center gap-2 rounded-full border border-line-strong bg-white text-[15px] font-semibold text-ink transition-colors hover:border-ink"

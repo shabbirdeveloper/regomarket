@@ -279,6 +279,19 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
               <div className="mt-6">
                 <PurchasePanel
                   slug={listing.slug}
+                  item={
+                    listing.orderable
+                      ? {
+                          listingId: listing.id,
+                          title: listing.title,
+                          image: listing.images[0]?.src ?? null,
+                          sellerId: listing.sellerId,
+                          shopName: seller.name,
+                          shopSlug: seller.shopSlug,
+                          shopDistrict: seller.place.district,
+                        }
+                      : undefined
+                  }
                   amount={listing.price.amount}
                   unit={unit}
                   orderable={listing.orderable}

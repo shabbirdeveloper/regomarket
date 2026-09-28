@@ -126,6 +126,21 @@ SST then creates the free SSL certificate and points `regomarket.pk` + `www` to 
 
 ---
 
+## Step 8 — Store: accounts, cart, checkout, orders
+
+1. **SQL (in order):** Supabase → SQL Editor → run `supabase/migrations/20261001000000_admin.sql` (if not done), then `supabase/migrations/20261002000000_store.sql`.
+2. **Email code instead of a link:** Supabase → Authentication → Emails → Templates. In **Magic Link** and **Confirm signup**, put the code in the message:
+   ```html
+   <h2>Your REGOMARKET code</h2>
+   <p style="font-size:28px;font-weight:bold;letter-spacing:4px">{{ .Token }}</p>
+   <p>Enter it on the site. Never share this code with anyone.</p>
+   ```
+   Keep **Email OTP length = 6** (Authentication → Providers → Email).
+3. **Before launch:** Supabase's built-in email only sends a few emails an hour, and only to your team's addresses. Add a mail service (for example Resend, free tier) under Authentication → Emails → SMTP settings.
+4. Push to GitHub. Then: sign in → add a dry-fruit item to the cart → Checkout → My orders.
+
+---
+
 ## Rough monthly cost (low traffic)
 
 | Service | Estimate |

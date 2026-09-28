@@ -3,31 +3,50 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ClipboardEvent, type FormEvent, type KeyboardEvent } from "react";
-import { ArrowLeft, Building2, CheckCircle2, Loader2, ShieldCheck, UserRound } from "lucide-react";
+import { ArrowLeft, Building2, CheckCircle2, Loader2, Mail, MapPin, ShieldCheck, UserRound } from "lucide-react";
 import { Field, TextInput } from "@/components/forms/fields";
+import { FormSelect } from "@/components/forms/form-select";
+import { districtOptions } from "@/lib/options";
+import { friendlyError, supabaseBrowser } from "@/lib/supabase/browser";
 import { cn } from "@/lib/utils";
+import { useAuth } from "./auth-provider";
 
-type Step = "phone" | "code" | "profile" | "done";
+type Step = "email" | "code" | "profile" | "done";
+const LEN = 6;
+const EMPTY = Array.from({ length: LEN }, () => "");
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /** "3551234567" → "355 1234567" */
 const pretty = (d: string) => (d.length > 3 ? `${d.slice(0, 3)} ${d.slice(3)}` : d);
 
 /**
- * Phone-number sign-in with a 6-digit SMS code — the way most people in GB
- * already log in to apps. New numbers get one extra step for name + account type.
- * Wired to Supabase Auth (phone OTP) later; for now any 6 digits continue.
+ * Sign in or create an account with a 6-digit code sent by email (no password).
+ * New accounts get one extra step: name, account type, district and mobile.
+ * Phone (SMS) codes can be added later with an SMS provider — same flow.
  */
 export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: string; mode?: "login" | "signup" }) {
   const router = useRouter();
-  const [step, setStep] = useState<Step>("phone");
-  const [phone, setPhone] = useState("");
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const auth = useAuth();
+  const [step, setStep] = useState<Step>("email");
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState<string[]>(EMPTY);
   const [name, setName] = useState("");
   const [kind, setKind] = useState<"individual" | "business">("individual");
+  const [district, setDistrict] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [wait, setWait] = useState(0);
   const boxes = useRef<(HTMLInputElement | null)[]>([]);
+  const db = supabaseBrowser();
+  const preview = !auth.enabled;
+
+  // Already signed in → finish the profile or go straight on
+  useEffect(() => {
+    if (auth.loading || !auth.user || step === "done") return;
+    if (auth.needsProfile) setStep("profile");
+    else if (auth.profile && step !== "profile") router.replace(next);
+  }, [auth.loading, auth.user, auth.needsProfile, auth.profile, step, next, router]);
 
   // Resend countdown
   useEffect(() => {
@@ -36,49 +55,115 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
     return () => clearTimeout(t);
   }, [wait]);
 
-  const sendCode = (e?: FormEvent) => {
+  const sendCode = async (e?: FormEvent) => {
     e?.preventDefault();
-    if (!/^3\d{9}$/.test(phone)) {
-      setError("Enter a mobile number like 355 1234567.");
+    const clean = email.trim().toLowerCase();
+    if (!EMAIL.test(clean)) {
+      setError("Enter your email, like ali@gmail.com.");
       return;
     }
     setError("");
     setBusy(true);
-    setTimeout(() => {
-      setBusy(false);
+    try {
+      if (db) {
+        const { error: err } = await db.auth.signInWithOtp({ email: clean, options: { shouldCreateUser: true } });
+        if (err) throw err;
+      } else {
+        await new Promise((r) => setTimeout(r, 600));
+      }
+      setEmail(clean);
       setStep("code");
-      setWait(45);
-      setCode(["", "", "", "", "", ""]);
+      setWait(60);
+      setCode(EMPTY);
       setTimeout(() => boxes.current[0]?.focus(), 50);
-    }, 700);
+    } catch (err) {
+      setError(friendlyError(err));
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const verify = (digits = code) => {
+  const verify = async (digits = code) => {
     if (digits.some((d) => !d)) {
-      setError("Enter all 6 digits.");
+      setError(`Enter all ${LEN} digits.`);
       return;
     }
     setError("");
     setBusy(true);
-    setTimeout(() => {
+    try {
+      if (db) {
+        const { data, error: err } = await db.auth.verifyOtp({ email, token: digits.join(""), type: "email" });
+        if (err) throw err;
+        const uid = data.user?.id;
+        const { data: row } = await db.from("sellers").select("name").eq("user_id", uid ?? "").maybeSingle<{ name: string }>();
+        await auth.refreshProfile();
+        setStep(!row || !row.name || row.name === "New user" ? "profile" : "done");
+      } else {
+        await new Promise((r) => setTimeout(r, 600));
+        setStep(mode === "signup" ? "profile" : "done");
+      }
+    } catch (err) {
+      setError(friendlyError(err));
+      setCode(EMPTY);
+      setTimeout(() => boxes.current[0]?.focus(), 50);
+    } finally {
       setBusy(false);
-      setStep(mode === "signup" ? "profile" : "done");
-    }, 700);
+    }
+  };
+
+  const saveProfile = async (e: FormEvent) => {
+    e.preventDefault();
+    if (name.trim().length < 2) {
+      setError("Enter your name.");
+      return;
+    }
+    if (!district) {
+      setError("Choose your district.");
+      return;
+    }
+    if (phone && !/^3\d{9}$/.test(phone)) {
+      setError("Enter a mobile number like 355 1234567, or leave it empty.");
+      return;
+    }
+    setError("");
+    setBusy(true);
+    try {
+      if (db && auth.user) {
+        const masked = phone ? `0${phone.slice(0, 3)} •••• ${phone.slice(-3)}` : "";
+        const { data: me, error: err } = await db
+          .from("sellers")
+          .update({ name: name.trim(), district, phone_masked: masked })
+          .eq("user_id", auth.user.id)
+          .select("id")
+          .single<{ id: string }>();
+        if (err) throw err;
+        if (phone) {
+          const { error: e2 } = await db.from("seller_contacts").upsert({ seller_id: me.id, phone: `+92${phone}` });
+          if (e2) throw e2;
+        }
+        await auth.refreshProfile();
+      }
+      setStep("done");
+    } catch (err) {
+      setError(friendlyError(err));
+    } finally {
+      setBusy(false);
+    }
   };
 
   const setDigit = (i: number, v: string) => {
     const d = v.replace(/\D/g, "").slice(-1);
     const nextCode = code.map((c, j) => (j === i ? d : c));
     setCode(nextCode);
-    if (d && i < 5) boxes.current[i + 1]?.focus();
-    if (d && i === 5 && nextCode.every(Boolean)) verify(nextCode);
+    if (d && i < LEN - 1) boxes.current[i + 1]?.focus();
+    if (d && i === LEN - 1 && nextCode.every(Boolean)) verify(nextCode);
   };
   const onKey = (i: number, e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace" && !code[i] && i > 0) boxes.current[i - 1]?.focus();
   };
   const onPaste = (e: ClipboardEvent<HTMLInputElement>) => {
-    const d = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-    if (d.length === 6) {
+    const d = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, LEN);
+    if (d.length === LEN) {
       e.preventDefault();
       const arr = d.split("");
       setCode(arr);
@@ -88,50 +173,62 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
 
   useEffect(() => {
     if (step !== "done") return;
-    const t = setTimeout(() => router.push(next), 1200);
+    const dest = kind === "business" && name ? "/create-shop" : next;
+    const t = setTimeout(() => router.replace(dest), 1100);
     return () => clearTimeout(t);
-  }, [step, next, router]);
+  }, [step, next, router, kind, name]);
+
+  if (auth.loading) {
+    return (
+      <div className="grid w-full max-w-[420px] place-items-center py-24">
+        <Loader2 className="size-6 animate-spin text-muted" aria-label="Loading" />
+      </div>
+    );
+  }
+
+  const primaryBtn =
+    "flex h-12 w-full items-center justify-center gap-2 rounded-full bg-mountain text-[15px] font-semibold text-white hover:bg-mountain-hover disabled:opacity-70";
 
   return (
     <div className="w-full max-w-[420px]">
-      {step === "phone" && (
+      {preview && step !== "done" && (
+        <p className="mb-5 rounded-xl bg-gold-wash px-4 py-2.5 text-[12.5px] text-gold-ink">Preview mode: no email is sent, any 6 digits work.</p>
+      )}
+
+      {step === "email" && (
         <form onSubmit={sendCode} noValidate>
           <h1 className="text-[26px] font-bold tracking-[-0.02em] text-ink">{mode === "signup" ? "Create your account" : "Sign in"}</h1>
-          <p className="mt-1.5 text-[14.5px] text-muted">We&apos;ll text a 6-digit code to your mobile. No password needed.</p>
+          <p className="mt-1.5 text-[14.5px] text-muted">We&apos;ll email you a 6-digit code. No password to remember.</p>
 
           <div className="mt-7">
-            <Field label="Mobile number" htmlFor="phone" error={error}>
+            <Field label="Email" htmlFor="email" error={error}>
               <div
                 className={cn(
                   "flex h-12 items-center overflow-hidden rounded-xl border bg-white focus-within:border-mountain focus-within:shadow-[0_0_0_4px_rgb(6_78_59/0.1)]",
                   error ? "border-[#d92d20]" : "border-line-strong",
                 )}
               >
-                <span className="flex h-full items-center gap-1.5 border-r border-line bg-cream px-3.5 text-[15px] font-semibold text-ink">
-                  <span aria-hidden>🇵🇰</span> +92
-                </span>
+                <Mail className="ml-4 size-[18px] shrink-0 text-muted" aria-hidden />
                 <input
-                  id="phone"
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel-national"
+                  id="email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   autoFocus
-                  value={pretty(phone)}
-                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").replace(/^0/, "").slice(0, 10))}
-                  placeholder="355 1234567"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@gmail.com"
                   aria-invalid={Boolean(error) || undefined}
-                  aria-describedby={error ? "phone-err" : undefined}
-                  className="h-full min-w-0 flex-1 bg-transparent px-3.5 text-[16px] tracking-wide text-ink outline-none placeholder:text-muted"
+                  aria-describedby={error ? "email-err" : undefined}
+                  className="h-full min-w-0 flex-1 bg-transparent px-3 text-[16px] text-ink outline-none placeholder:text-muted"
                 />
               </div>
             </Field>
           </div>
 
-          <button
-            type="submit"
-            disabled={busy}
-            className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-mountain text-[15px] font-semibold text-white hover:bg-mountain-hover disabled:opacity-70"
-          >
+          <button type="submit" disabled={busy} className={cn(primaryBtn, "mt-5")}>
             {busy && <Loader2 className="size-4 animate-spin" aria-hidden />}
             Send code
           </button>
@@ -164,16 +261,23 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
           }}
           noValidate
         >
-          <button type="button" onClick={() => setStep("phone")} className="-ml-2 inline-flex h-9 items-center gap-1 rounded-full px-2 text-[13.5px] font-medium text-muted hover:text-ink">
-            <ArrowLeft className="size-4" aria-hidden /> Change number
+          <button
+            type="button"
+            onClick={() => {
+              setStep("email");
+              setError("");
+            }}
+            className="-ml-2 inline-flex h-9 items-center gap-1 rounded-full px-2 text-[13.5px] font-medium text-muted hover:text-ink"
+          >
+            <ArrowLeft className="size-4" aria-hidden /> Change email
           </button>
-          <h1 className="mt-2 text-[26px] font-bold tracking-[-0.02em] text-ink">Enter the code</h1>
+          <h1 className="mt-2 text-[26px] font-bold tracking-[-0.02em] text-ink">Check your email</h1>
           <p className="mt-1.5 text-[14.5px] text-muted">
-            Sent by SMS to <span className="font-semibold text-ink">+92 {pretty(phone)}</span>
+            We sent a {LEN}-digit code to <span className="font-semibold text-ink">{email}</span>. Look in Spam if you don&apos;t see it.
           </p>
 
           <fieldset className="mt-7">
-            <legend className="sr-only">6-digit code</legend>
+            <legend className="sr-only">{LEN}-digit code</legend>
             <div className="flex justify-between gap-2">
               {code.map((d, i) => (
                 <input
@@ -188,30 +292,31 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
                   inputMode="numeric"
                   autoComplete={i === 0 ? "one-time-code" : "off"}
                   aria-label={`Digit ${i + 1}`}
+                  disabled={busy}
                   className={cn(
-                    "size-12 rounded-xl border bg-white text-center text-[20px] font-semibold text-ink outline-none transition focus:border-mountain focus:shadow-[0_0_0_4px_rgb(6_78_59/0.1)] sm:size-14",
+                    "size-12 rounded-xl border bg-white text-center text-[20px] font-semibold text-ink outline-none transition focus:border-mountain focus:shadow-[0_0_0_4px_rgb(6_78_59/0.1)] disabled:opacity-60 sm:size-14",
                     error ? "border-[#d92d20]" : d ? "border-ink/40" : "border-line-strong",
                   )}
                 />
               ))}
             </div>
           </fieldset>
-          {error && <p className="mt-2 text-[12.5px] font-medium text-[#b42318]">{error}</p>}
+          {error && (
+            <p role="alert" className="mt-2 text-[12.5px] font-medium text-[#b42318]">
+              {error}
+            </p>
+          )}
 
-          <button
-            type="submit"
-            disabled={busy}
-            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-mountain text-[15px] font-semibold text-white hover:bg-mountain-hover disabled:opacity-70"
-          >
+          <button type="submit" disabled={busy} className={cn(primaryBtn, "mt-6")}>
             {busy && <Loader2 className="size-4 animate-spin" aria-hidden />}
             Verify
           </button>
           <p className="mt-4 text-center text-[13.5px] text-muted">
             {wait > 0 ? (
-              <>Resend code in 0:{String(wait).padStart(2, "0")}</>
+              <>Send a new code in 0:{String(wait).padStart(2, "0")}</>
             ) : (
               <button type="button" onClick={() => sendCode()} className="font-semibold text-mountain hover:underline">
-                Resend code
+                Send a new code
               </button>
             )}
           </p>
@@ -219,23 +324,12 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
       )}
 
       {step === "profile" && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (name.trim().length < 2) {
-              setError("Enter your name.");
-              return;
-            }
-            setError("");
-            setStep("done");
-          }}
-          noValidate
-        >
+        <form onSubmit={saveProfile} noValidate>
           <h1 className="text-[26px] font-bold tracking-[-0.02em] text-ink">Almost done</h1>
-          <p className="mt-1.5 text-[14.5px] text-muted">Your number is verified. Tell buyers and sellers who you are.</p>
+          <p className="mt-1.5 text-[14.5px] text-muted">Tell buyers and sellers who you are.</p>
           <div className="mt-7 space-y-5">
-            <Field label="Your name" htmlFor="name" error={error}>
-              <TextInput id="name" autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Ali Hassan" invalid={Boolean(error)} />
+            <Field label="Your name" htmlFor="name">
+              <TextInput id="name" autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Ali Hassan" autoComplete="name" />
             </Field>
             <div>
               <p className="text-[14px] font-semibold text-ink">I&apos;m here as</p>
@@ -262,8 +356,41 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
                 ))}
               </div>
             </div>
+            <Field label="District" htmlFor="district">
+              <FormSelect
+                id="district"
+                name="district"
+                label="District"
+                options={districtOptions}
+                value={district}
+                onChange={setDistrict}
+                placeholder="Choose your district"
+                icon={<MapPin className="size-4" aria-hidden />}
+              />
+            </Field>
+            <Field label="Mobile number" htmlFor="phone" optional hint="For delivery and WhatsApp. Shown to others only when you allow it.">
+              <div className="flex h-12 items-center overflow-hidden rounded-xl border border-line-strong bg-white focus-within:border-mountain focus-within:shadow-[0_0_0_4px_rgb(6_78_59/0.1)]">
+                <span className="flex h-full items-center border-r border-line bg-cream px-3.5 text-[15px] font-semibold text-ink">+92</span>
+                <input
+                  id="phone"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  value={pretty(phone)}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").replace(/^0/, "").slice(0, 10))}
+                  placeholder="355 1234567"
+                  className="h-full min-w-0 flex-1 bg-transparent px-3.5 text-[16px] tracking-wide text-ink outline-none placeholder:text-muted"
+                />
+              </div>
+            </Field>
           </div>
-          <button type="submit" className="mt-6 flex h-12 w-full items-center justify-center rounded-full bg-mountain text-[15px] font-semibold text-white hover:bg-mountain-hover">
+          {error && (
+            <p role="alert" className="mt-4 text-[13px] font-medium text-[#b42318]">
+              {error}
+            </p>
+          )}
+          <button type="submit" disabled={busy} className={cn(primaryBtn, "mt-6")}>
+            {busy && <Loader2 className="size-4 animate-spin" aria-hidden />}
             Continue
           </button>
         </form>
@@ -272,17 +399,17 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
       {step === "done" && (
         <div className="text-center" role="status">
           <CheckCircle2 className="mx-auto size-14 text-success" aria-hidden />
-          <h1 className="mt-3 text-[24px] font-bold tracking-[-0.02em] text-ink">{name ? `Welcome, ${name.split(" ")[0]}!` : "You're signed in"}</h1>
-          <p className="mt-1.5 text-[14.5px] text-muted">
-            {kind === "business" && name ? "Next: open your shop from your account." : "Taking you back…"}
-          </p>
+          <h1 className="mt-3 text-[24px] font-bold tracking-[-0.02em] text-ink">
+            {name ? `Welcome, ${name.trim().split(" ")[0]}!` : auth.profile?.name ? `Welcome back, ${auth.profile.name.split(" ")[0]}!` : "You're signed in"}
+          </h1>
+          <p className="mt-1.5 text-[14.5px] text-muted">{kind === "business" && name ? "Next: set up your shop." : "Taking you back…"}</p>
           <Loader2 className="mx-auto mt-5 size-5 animate-spin text-muted" aria-hidden />
         </div>
       )}
 
       {step !== "done" && (
         <p className="mt-8 flex items-center justify-center gap-1.5 text-[12px] text-muted">
-          <ShieldCheck className="size-4 text-success" aria-hidden /> We never show your full number without your OK.
+          <ShieldCheck className="size-4 text-success" aria-hidden /> We never share your email or number without your OK.
         </p>
       )}
     </div>

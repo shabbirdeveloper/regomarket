@@ -5,10 +5,18 @@ import { getAccount } from "@/lib/data";
 import { placeLabel, formatNumber } from "@/lib/format";
 import { MyAds, type MyAd } from "@/components/account/my-ads";
 import { SettingsPanel } from "@/components/account/settings-panel";
+import { AccountView } from "@/components/account/account-view";
+import { SUPABASE_ENABLED } from "@/lib/data/supabase";
 
 export const metadata: Metadata = { title: "My account", robots: { index: false } };
 
 export default async function DashboardPage() {
+  // Live site: the signed-in user's real account. Local preview: demo account below.
+  if (SUPABASE_ENABLED) return <AccountView />;
+  return <PreviewDashboard />;
+}
+
+async function PreviewDashboard() {
   const { me, ads, unreadMessages, unreadNotifications } = await getAccount();
   const live = ads.filter((a) => a.meta.status === "active");
   const views = ads.reduce((n, a) => n + a.views, 0);

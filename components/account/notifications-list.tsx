@@ -26,13 +26,25 @@ const KIND: Record<NotificationView["kind"], { Icon: LucideIcon; cls: string }> 
   review: { Icon: Star, cls: "bg-gold-wash text-gold-ink" },
 };
 
-export function NotificationsList({ initial }: { initial: NotificationView[] }) {
+export function NotificationsList({
+  initial,
+  onRead,
+  onReadAll,
+}: {
+  initial: NotificationView[];
+  /** Save "read" (live site) */
+  onRead?: (id: string) => void;
+  onReadAll?: () => void;
+}) {
   const [items, setItems] = useState(initial);
   const [tab, setTab] = useState<"all" | "unread">("all");
   const unread = items.filter((n) => !n.read).length;
   const shown = tab === "all" ? items : items.filter((n) => !n.read);
 
-  const markRead = (id: string) => setItems((xs) => xs.map((n) => (n.id === id ? { ...n, read: true } : n)));
+  const markRead = (id: string) => {
+    setItems((xs) => xs.map((n) => (n.id === id ? { ...n, read: true } : n)));
+    onRead?.(id);
+  };
 
   return (
     <div className="overflow-hidden rounded-2xl border border-line bg-white">
@@ -56,7 +68,10 @@ export function NotificationsList({ initial }: { initial: NotificationView[] }) 
         <button
           type="button"
           disabled={!unread}
-          onClick={() => setItems((xs) => xs.map((n) => ({ ...n, read: true })))}
+          onClick={() => {
+            setItems((xs) => xs.map((n) => ({ ...n, read: true })));
+            onReadAll?.();
+          }}
           className="text-[13px] font-semibold text-mountain disabled:text-muted"
         >
           Mark all as read
@@ -66,7 +81,7 @@ export function NotificationsList({ initial }: { initial: NotificationView[] }) 
       {shown.length ? (
         <ul className="divide-y divide-line">
           {shown.map((n) => {
-            const { Icon, cls } = KIND[n.kind];
+            const { Icon, cls } = KIND[n.kind] ?? KIND.system;
             return (
               <li key={n.id}>
                 <Link
