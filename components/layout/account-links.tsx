@@ -56,8 +56,31 @@ export function AccountIcon({ className }: { className?: string }) {
 }
 
 export function MessagesLink({ className }: { className?: string }) {
-  const { enabled } = useAuth();
-  const n = enabled ? 0 : previewUser.unreadMessages;
+  const { enabled, user } = useAuth();
+  const [n, setN] = useState(enabled ? 0 : previewUser.unreadMessages);
+
+  // Unread chat messages sent to me (RLS limits the count to my chats)
+  useEffect(() => {
+    const db = supabaseBrowser();
+    if (!db || !user) {
+      setN(enabled ? 0 : previewUser.unreadMessages);
+      return;
+    }
+    let alive = true;
+    const load = () =>
+      db
+        .from("messages")
+        .select("id", { count: "exact", head: true })
+        .is("read_at", null)
+        .neq("sender_user_id", user.id)
+        .then(({ count }) => alive && setN(count ?? 0));
+    load();
+    const t = setInterval(load, 30_000);
+    return () => {
+      alive = false;
+      clearInterval(t);
+    };
+  }, [enabled, user]);
   return (
     <Link href="/messages" data-tip="Messages" className={cn(headerIconCls, className)}>
       <MessageSquareText className="size-[21px]" strokeWidth={1.8} aria-hidden />

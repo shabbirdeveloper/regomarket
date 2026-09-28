@@ -15,6 +15,8 @@ export interface InboxMessage {
   text: string;
   at: string;
   offer?: number;
+  /** Live mode: has the other person seen it (my messages only) */
+  read?: boolean;
 }
 
 export interface InboxConversation {
@@ -24,6 +26,19 @@ export interface InboxConversation {
   unread: number;
   listing: ListingCardData;
   messages: InboxMessage[];
+  /** Shown instead of the message box (e.g. seller not on chat yet) */
+  notice?: string;
+}
+
+/** Live mode (Supabase): how the inbox sends, marks read and hears new messages. */
+export interface InboxLive {
+  /** Returns the real conversation id (new chats get one on the first message) and message id */
+  send: (c: InboxConversation, text: string, offer?: number) => Promise<{ conversationId: string; id: string; at: string }>;
+  markRead: (conversationId: string) => void;
+  /** Calls back for every new message in any of my chats; returns unsubscribe */
+  subscribe: (on: (conversationId: string, m: InboxMessage) => void) => () => void;
+  /** Loads a chat that isn't in the list yet (someone just messaged me) */
+  load: (conversationId: string) => Promise<InboxConversation | null>;
 }
 
 type Filter = "all" | "buying" | "selling" | "unread";
@@ -69,8 +84,9 @@ function Avatar({ name, online, size = 44 }: { name: string; online?: boolean; s
  * Buyer–seller chat. Messages you send stay on this page for now; they go to
  * Supabase Realtime once accounts are live.
  */
-export function Inbox({ initial, initialId }: { initial: InboxConversation[]; initialId: string | null }) {
+export function Inbox({ initial, initialId, live }: { initial: InboxConversation[]; initialId: string | null; live?: InboxLive }) {
   const [convos, setConvos] = useState(initial);
+  const [sendError, setSendError] = useState("");
   const [activeId, setActiveId] = useState<string | null>(initialId);
   const [filter, setFilter] = useState<Filter>("all");
   const [q, setQ] = useState("");
@@ -86,7 +102,9 @@ export function Inbox({ initial, initialId }: { initial: InboxConversation[]; in
   useEffect(() => {
     if (!activeId) return;
     setConvos((cs) => cs.map((c) => (c.id === activeId && c.unread ? { ...c, unread: 0 } : c)));
+    setSendError("");
     if (activeId.startsWith("new-")) return; // a chat that doesn't exist yet keeps its ?listing= link
+    live?.markRead(activeId);
     const url = new URL(window.location.href);
     url.search = `?c=${activeId}`;
     history.replaceState(null, "", url);
@@ -96,6 +114,31 @@ export function Inbox({ initial, initialId }: { initial: InboxConversation[]; in
     endRef.current?.scrollIntoView({ block: "end" });
   }, [activeId, active?.messages.length]);
 
+  // Live: new messages from the other side (and from my other devices), plus read ticks
+  const activeRef = useRef(activeId);
+  const idsRef = useRef<Set<string>>(new Set());
+  activeRef.current = activeId;
+  idsRef.current = new Set(convos.map((c) => c.id));
+  useEffect(() => {
+    if (!live) return;
+    return live.subscribe((convId, m) => {
+      if (!idsRef.current.has(convId)) {
+        if (m.from === "me") return; // my own first message in a new chat: send() adds the chat
+        live.load(convId).then((c) => c && setConvos((cs) => (cs.some((x) => x.id === c.id) ? cs : [c, ...cs])));
+        return;
+      }
+      setConvos((cs) =>
+        cs.map((c) => {
+          if (c.id !== convId) return c;
+          if (c.messages.some((x) => x.id === m.id)) return { ...c, messages: c.messages.map((x) => (x.id === m.id ? { ...x, read: m.read } : x)) };
+          const open = activeRef.current === convId;
+          return { ...c, messages: [...c.messages, m], unread: m.from === "them" && !open ? c.unread + 1 : c.unread };
+        }),
+      );
+      if (activeRef.current === convId && m.from === "them" && !m.read) live.markRead(convId);
+    });
+  }, [live]);
+
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return convos
@@ -104,12 +147,37 @@ export function Inbox({ initial, initialId }: { initial: InboxConversation[]; in
       .sort((a, b) => +new Date(b.messages.at(-1)?.at ?? 0) - +new Date(a.messages.at(-1)?.at ?? 0));
   }, [convos, filter, q]);
 
-  const send = (text: string, amount?: number) => {
-    if (!active || (!text.trim() && !amount)) return;
+  const send = async (text: string, amount?: number) => {
+    if (!active || active.notice || (!text.trim() && !amount)) return;
     const msg: InboxMessage = { id: `local-${Date.now()}`, from: "me", text: text.trim(), at: new Date().toISOString(), offer: amount };
-    setConvos((cs) => cs.map((c) => (c.id === active.id ? { ...c, messages: [...c.messages, msg] } : c)));
+    const convId = active.id;
+    setConvos((cs) => cs.map((c) => (c.id === convId ? { ...c, messages: [...c.messages, msg] } : c)));
     setDraft("");
+    setSendError("");
     inputRef.current?.focus();
+    if (!live) return;
+    try {
+      const r = await live.send(active, msg.text, amount);
+      setConvos((cs) =>
+        cs.map((c) =>
+          c.id === convId
+            ? {
+                ...c,
+                id: r.conversationId,
+                // the realtime copy may have arrived first
+                messages: c.messages.some((x) => x.id === r.id) ? c.messages.filter((x) => x.id !== msg.id) : c.messages.map((x) => (x.id === msg.id ? { ...x, id: r.id, at: r.at } : x)),
+              }
+            : c,
+        ),
+      );
+      if (convId !== r.conversationId) {
+        setActiveId(r.conversationId);
+      }
+    } catch (e) {
+      setConvos((cs) => cs.map((c) => (c.id === convId ? { ...c, messages: c.messages.filter((x) => x.id !== msg.id) } : c)));
+      setDraft(text);
+      setSendError((e as Error).message || "Message not sent. Try again.");
+    }
   };
 
   const onSubmit = (e: FormEvent) => {
@@ -320,7 +388,7 @@ export function Inbox({ initial, initialId }: { initial: InboxConversation[]; in
                           <p className="whitespace-pre-wrap break-words">{m.text}</p>
                           <p className={cn("mt-0.5 flex items-center justify-end gap-1 text-[10.5px]", mine ? "text-white/70" : "text-muted")}>
                             {timeFmt.format(new Date(m.at))}
-                            {mine && (m.id.startsWith("local-") ? <Check className="size-3.5" aria-label="Sent" /> : <CheckCheck className="size-3.5" aria-label="Read" />)}
+                            {mine && (m.id.startsWith("local-") ? <Check className="size-3.5 opacity-60" aria-label="Sending" /> : m.read === false ? <Check className="size-3.5" aria-label="Sent" /> : <CheckCheck className="size-3.5" aria-label="Read" />)}
                           </p>
                         </div>
                       )}
@@ -333,7 +401,16 @@ export function Inbox({ initial, initialId }: { initial: InboxConversation[]; in
           </div>
 
           {/* Compose */}
+          {active.notice ? (
+            <div className="border-t border-line bg-gold-wash px-4 py-4 text-center text-[13.5px] text-gold-ink md:px-5">
+              {active.notice}{" "}
+              <Link href={routes.listing(active.listing.slug)} className="font-semibold underline underline-offset-4">
+                Back to the ad
+              </Link>
+            </div>
+          ) : (
           <div className="border-t border-line bg-white px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 md:px-5">
+            {sendError && <p role="alert" className="mb-2 rounded-lg bg-urgent-wash px-3 py-2 text-[12.5px] font-medium text-urgent">{sendError}</p>}
             <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-2.5">
               {QUICK[active.role].map((t) => (
                 <button
@@ -401,6 +478,7 @@ export function Inbox({ initial, initialId }: { initial: InboxConversation[]; in
               </button>
             </form>
           </div>
+          )}
         </section>
       ) : (
         <div className="hidden flex-col items-center justify-center p-10 text-center lg:flex">

@@ -321,7 +321,7 @@ function Detail({ id }: { id: string }) {
               </section>
 
               <Link
-                href={`/messages?shop=${o.shops?.slug ?? ""}`}
+                href={o.order_items[0]?.listing_slug ? `/messages?listing=${o.order_items[0].listing_slug}` : `/messages?shop=${o.shops?.slug ?? ""}`}
                 className="flex h-11 items-center justify-center gap-2 rounded-full border border-line-strong bg-white text-[14px] font-semibold text-ink hover:border-ink"
               >
                 <MessageSquareText className="size-4" aria-hidden /> Message the shop

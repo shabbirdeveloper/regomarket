@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getAllListingCards, getConversations, getShopBySlug } from "@/lib/data";
 import { sellerById } from "@/data/sellers";
 import { Inbox, type InboxConversation } from "@/components/messages/inbox";
+import { LiveInbox } from "@/components/messages/live-inbox";
+import { SUPABASE_ENABLED } from "@/lib/data/supabase";
 
 export const metadata: Metadata = { title: "Messages", robots: { index: false } };
 
@@ -9,6 +11,16 @@ type SP = { c?: string; listing?: string; shop?: string };
 
 export default async function MessagesPage({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
+  if (SUPABASE_ENABLED) {
+    return (
+      <div className="bg-cream">
+        <div className="shell pb-6 pt-4 md:pb-10 md:pt-6">
+          <h1 className="mb-4 text-[24px] font-bold tracking-[-0.02em] text-ink md:text-[28px]">Messages</h1>
+          <LiveInbox c={sp.c} listing={sp.listing} shop={sp.shop} />
+        </div>
+      </div>
+    );
+  }
   const convos: InboxConversation[] = await getConversations();
   let initialId: string | null = sp.c && convos.some((c) => c.id === sp.c) ? sp.c : null;
 
