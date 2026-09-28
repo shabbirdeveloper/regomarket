@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { LandscapeArt } from "@/components/media/landscape-art";
+import { SiteShell } from "@/components/layout/site-shell";
 
 export default function NotFound() {
   return (
+    <SiteShell>
     <section className="shell grid items-center gap-10 py-16 md:grid-cols-2 md:py-24">
       <div>
         <p className="eyebrow text-gold-ink">Page not found</p>
@@ -26,5 +28,6 @@ export default function NotFound() {
         <LandscapeArt art={{ seed: 404, palette: "glacier", motif: "lake" }} />
       </div>
     </section>
+    </SiteShell>
   );
 }

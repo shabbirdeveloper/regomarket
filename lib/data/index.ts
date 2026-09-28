@@ -587,3 +587,19 @@ export async function getSellerProfile(id: string) {
   const ads = withMine().filter((l) => l.sellerId === id).sort(byNewest).map((l) => toCard(l, now));
   return { seller, ads };
 }
+
+/* ---------- Admin: the raw public data (lib/admin/data.ts builds its views from this) ---------- */
+
+export async function getAdminSnapshot() {
+  await ready();
+  return {
+    listings: withMine(),
+    sellers: Object.values(sellerById),
+    shops: shops.map(resolveShop),
+    shopReviews,
+    wantedRequests,
+    categories,
+    bazaars: bazaars.map((b) => ({ ...b, image: resolveMedia(b.image) })),
+    districts,
+  };
+}

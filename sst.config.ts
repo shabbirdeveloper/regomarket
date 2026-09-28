@@ -26,6 +26,9 @@ export default $config({
   async run() {
     const supabaseUrl = new sst.Secret("SupabaseUrl");
     const supabaseAnonKey = new sst.Secret("SupabaseAnonKey");
+    // Admin panel password (server-only). Until it is set, /admin stays locked.
+    // npx sst secret set AdminPassword "<12+ characters>" --stage production
+    const adminPassword = new sst.Secret("AdminPassword", "not-set");
 
     const isProd = $app.stage === "production";
     // Set REGO_DOMAIN=regomarket.pk (hosted zone in Route 53) when the domain is ready
@@ -35,6 +38,7 @@ export default $config({
       environment: {
         NEXT_PUBLIC_SUPABASE_URL: supabaseUrl.value,
         NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonKey.value,
+        ADMIN_PASSWORD: adminPassword.value,
         // Only set when the real domain is live; otherwise lib/site.ts falls back
         ...(isProd && domain ? { NEXT_PUBLIC_SITE_URL: `https://${domain}` } : {}),
       },

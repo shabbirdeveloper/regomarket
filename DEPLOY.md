@@ -106,6 +106,26 @@ SST then creates the free SSL certificate and points `regomarket.pk` + `www` to 
 
 ---
 
+## Step 7 — Admin panel (`/admin`)
+
+1. **Password (now):** pick a strong password (12+ characters, not used anywhere else) and run:
+   ```bash
+   npx sst secret set AdminPassword "your-strong-password" --stage production
+   ```
+   Push to GitHub (or `npm run deploy`). Until this is set, `/admin` on the live site stays **locked**.
+   On your own computer `npm run dev` opens `/admin` without a password (development only).
+2. **Database (when you connect real data):** Supabase → SQL Editor → paste `supabase/migrations/20261001000000_admin.sql` → **Run**.
+   It adds admin roles (owner / admin / moderator / support), moderation columns, the verification queue, the audit log, site settings, blog posts and the admin functions.
+3. **Make yourself owner:** sign in once on the site with your phone, then in the SQL Editor run:
+   ```sql
+   insert into public.admins (user_id, name, role)
+   select id, 'Shabbir Hussain', 'owner' from auth.users where phone = '92355XXXXXXX';
+   ```
+
+> Today the admin shows preview data, and actions are saved in your browser only. When Supabase phone login is wired, each admin signs in with their own phone and every action goes through `admin_moderate()` / `admin_verify()` (logged in `admin_audit_log`).
+
+---
+
 ## Rough monthly cost (low traffic)
 
 | Service | Estimate |
@@ -128,3 +148,4 @@ Check current prices on each provider's website before launch.
 | `npm run deploy` | Deploy to AWS (production) |
 | `npx sst deploy --stage test` | A separate test copy of the site |
 | `npx sst remove --stage test` | Delete the test copy |
+| `npx sst secret set AdminPassword "…" --stage production` | Set / change the admin password |

@@ -4,7 +4,6 @@ import { Poppins } from "next/font/google";
 import { site } from "@/lib/site";
 import { organizationLd } from "@/lib/seo";
 import { JsonLd } from "@/components/common/json-ld";
-import { SiteShell } from "@/components/layout/site-shell";
 import "./globals.css";
 
 // Google Fonts, self-hosted at build time by next/font (no layout shift, no third-party request).
@@ -58,7 +57,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en-PK" className={poppins.variable}>
       <body id="top">
         <JsonLd data={organizationLd()} />
-        <SiteShell>{children}</SiteShell>
+        {children}
       </body>
     </html>
   );
