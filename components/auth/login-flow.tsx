@@ -16,6 +16,27 @@ const LEN = 6;
 const EMPTY = Array.from({ length: LEN }, () => "");
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+/** Our own limits (Supabase has its own on top): 5 codes per hour, 5 wrong tries per code. */
+const MAX_SENDS_PER_HOUR = 5;
+const MAX_WRONG = 5;
+const SENDS_KEY = "rego:otp-sends";
+
+function recentSends(): number[] {
+  try {
+    const list = JSON.parse(localStorage.getItem(SENDS_KEY) ?? "[]") as number[];
+    return list.filter((t) => Date.now() - t < 3_600_000);
+  } catch {
+    return [];
+  }
+}
+function recordSend() {
+  try {
+    localStorage.setItem(SENDS_KEY, JSON.stringify([...recentSends(), Date.now()]));
+  } catch {
+    /* storage blocked */
+  }
+}
+
 /** "3551234567" → "355 1234567" */
 const pretty = (d: string) => (d.length > 3 ? `${d.slice(0, 3)} ${d.slice(3)}` : d);
 
@@ -37,6 +58,7 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [wait, setWait] = useState(0);
+  const [wrong, setWrong] = useState(0);
   const boxes = useRef<(HTMLInputElement | null)[]>([]);
   const db = supabaseBrowser();
   const preview = !auth.enabled;
@@ -62,6 +84,12 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
       setError("Enter your email, like ali@gmail.com.");
       return;
     }
+    const sent = recentSends();
+    if (sent.length >= MAX_SENDS_PER_HOUR) {
+      const mins = Math.max(1, Math.ceil((sent[0] + 3_600_000 - Date.now()) / 60_000));
+      setError(`You asked for ${MAX_SENDS_PER_HOUR} codes in the last hour. Please try again in ${mins} min.`);
+      return;
+    }
     setError("");
     setBusy(true);
     try {
@@ -71,8 +99,10 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
       } else {
         await new Promise((r) => setTimeout(r, 600));
       }
+      recordSend();
       setEmail(clean);
       setStep("code");
+      setWrong(0);
       setWait(60);
       setCode(EMPTY);
       setTimeout(() => boxes.current[0]?.focus(), 50);
@@ -103,8 +133,16 @@ export function LoginFlow({ next = "/dashboard", mode = "login" }: { next?: stri
         setStep(mode === "signup" ? "profile" : "done");
       }
     } catch (err) {
-      setError(friendlyError(err));
+      const tries = wrong + 1;
+      setWrong(tries);
       setCode(EMPTY);
+      if (tries >= MAX_WRONG) {
+        // Too many wrong codes: this code is finished, ask for a new one
+        setStep("email");
+        setError(`${MAX_WRONG} wrong codes. For your safety, ask for a new code.`);
+        return;
+      }
+      setError(`${friendlyError(err)} (${MAX_WRONG - tries} ${MAX_WRONG - tries === 1 ? "try" : "tries"} left)`);
       setTimeout(() => boxes.current[0]?.focus(), 50);
     } finally {
       setBusy(false);
