@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Check, MessageCircle, Minus, Phone, Plus, ShoppingBag, ShoppingCart } from "lucide-react";
-import { cart } from "@/lib/cart";
+import { cart, useCart } from "@/lib/cart";
+import { SaveButton } from "@/components/listings/save-button";
 import { WhatsAppIcon } from "@/components/common/brand-icons";
 import { cn } from "@/lib/utils";
 
@@ -24,8 +25,13 @@ export function PurchasePanel({
   phoneMasked,
   whatsapp,
   sellerName,
+  saveId,
+  title,
 }: {
   slug: string;
+  /** For the heart on the phone buy bar */
+  saveId: string;
+  title: string;
   /** What goes into the cart (orderable items only) */
   item?: { listingId: string; title: string; image: string | null; sellerId: string; shopName: string; shopSlug?: string; shopDistrict: string };
   amount: number;
@@ -43,6 +49,7 @@ export function PurchasePanel({
   const [showPhone, setShowPhone] = useState(false);
   const line = item ? { ...item, slug, price: amount, unit } : null;
   const total = amount * qty;
+  const { count: inCart } = useCart();
   const label = unit ? unit : qty === 1 ? "item" : "items";
 
   if (orderable) {
@@ -100,7 +107,7 @@ export function PurchasePanel({
         </div>
 
         <div className="grid gap-2.5">
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2.5 max-md:hidden sm:grid-cols-2">
             <button
               type="button"
               disabled={!line}
@@ -144,6 +151,29 @@ export function PurchasePanel({
             Ask {sellerName.split(" ")[0]} a question
           </Link>
         </div>
+
+        <BuyBar saveId={saveId} title={title}>
+          {added ? (
+            <Link href="/cart" className={barPrimary}>
+              <ShoppingBag className="size-5" aria-hidden />
+              View cart{inCart ? ` · ${inCart}` : ""}
+            </Link>
+          ) : (
+            <button
+              type="button"
+              disabled={!line}
+              onClick={() => {
+                if (!line) return;
+                cart.add(line, qty);
+                setAdded(true);
+              }}
+              className={barPrimary}
+            >
+              <ShoppingCart className="size-5" aria-hidden />
+              Add to cart · Rs {nf.format(total)}
+            </button>
+          )}
+        </BuyBar>
       </div>
     );
   }
@@ -186,6 +216,28 @@ export function PurchasePanel({
           <MessageCircle className="size-[18px]" aria-hidden />
           Chat
         </Link>
+      </div>
+
+      <BuyBar saveId={saveId} title={title}>
+        <Link href={`/messages?listing=${slug}`} className={barPrimary}>
+          <MessageCircle className="size-5" aria-hidden />
+          Chat with seller
+        </Link>
+      </BuyBar>
+    </div>
+  );
+}
+
+const barPrimary =
+  "flex h-[52px] min-w-0 flex-1 items-center justify-center gap-2 truncate rounded-[16px] bg-mountain px-4 text-[15px] font-semibold text-white transition-colors active:bg-mountain-hover disabled:opacity-50";
+
+/** Phones: a floating bar with the heart and the one main action (the tab dock hides on ad pages). */
+function BuyBar({ saveId, title, children }: { saveId: string; title: string; children: ReactNode }) {
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(env(safe-area-inset-bottom)+10px)] md:hidden print:hidden">
+      <div className="mx-auto flex max-w-md items-center gap-2.5 rounded-[24px] bg-white p-2 shadow-dock ring-1 ring-ink/[0.06]">
+        <SaveButton id={saveId} title={title} className="size-[52px] shrink-0 rounded-[16px] border-line bg-surface shadow-none" />
+        {children}
       </div>
     </div>
   );

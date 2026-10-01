@@ -65,7 +65,7 @@ export function SavedView({ listings, shops }: { listings: ListingCardData[]; sh
         ads.length ? (
           <>
             <p className="mt-5 text-[13px] text-muted">Tap the heart on any ad to remove it.</p>
-            <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 md:gap-x-5 lg:grid-cols-4 xl:grid-cols-5">
+            <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-5 md:gap-y-8 lg:grid-cols-4 xl:grid-cols-5">
               {ads.map((l) => (
                 <li key={l.id}>
                   <ProductCard listing={l} />

@@ -214,7 +214,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
             {items.length > 0 ? (
               <>
-                <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 md:gap-x-5 xl:grid-cols-4 2xl:grid-cols-5">
+                <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-5 md:gap-y-8 xl:grid-cols-4 2xl:grid-cols-5">
                   {items.map((l, i) => (
                     <li key={l.id}>
                       <ProductCard listing={l} priority={i < 4} />

@@ -46,7 +46,7 @@ export function Gallery({ images, title, children }: { images: Media[]; title: s
 
       <div className="relative min-w-0 flex-1">
         <div
-          className="relative aspect-square overflow-hidden rounded-2xl bg-[#f3f1ec] md:cursor-zoom-in"
+          className="relative aspect-square overflow-hidden rounded-[24px] bg-[#f3f1ec] md:cursor-zoom-in md:rounded-2xl"
           onMouseMove={onMove}
           onMouseLeave={() => setZoom(null)}
         >

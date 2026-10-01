@@ -8,6 +8,7 @@ import { HeaderQueryInput } from "./header-query-input";
 import { Logo } from "./logo";
 import { MainNav } from "./main-nav";
 import { MobileMenu } from "./mobile-menu";
+import { MobileSearchRow } from "./mobile-search";
 import { SavedLink } from "./saved-link";
 import { AccountChip, AccountIcon, CartLink, MessagesLink, NotificationsLink } from "./account-links";
 
@@ -51,7 +52,7 @@ export async function Header() {
   const navBazaars = bazaars.map((b) => ({ slug: b.slug, name: b.name, district: districtBySlug[b.district].name }));
 
   return (
-    <header className="site-header sticky top-0 z-50 border-b border-line bg-white">
+    <header className="site-header sticky top-0 z-50 bg-white md:border-b md:border-line">
       <div className="shell flex h-16 items-center gap-4 lg:h-[72px] lg:gap-5">
         <Logo />
 
@@ -79,10 +80,8 @@ export async function Header() {
           <MobileMenu categories={categories} />
         </div>
       </div>
-      {/* Phones: search gets its own full-width row */}
-      <div className="shell pb-3 md:hidden">
-        <HeaderSearch id="header-q-m" />
-      </div>
+      {/* Phones: search gets its own full-width row (home draws it under the welcome line) */}
+      <MobileSearchRow />
     </header>
   );
 }

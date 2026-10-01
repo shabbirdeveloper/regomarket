@@ -40,6 +40,7 @@
   --color-paper: #fffdf8; /* Warm white — cards, inputs */
   --color-oat: #f5efe4; /* Signature warm band (Fresh From GB) */
   --color-stone: #f2eee6; /* Quiet fills, icon wells */
+  --color-surface: #f4f3ef; /* Phone app surfaces: cards, search, chips */
   --color-sand: #f2eee6;
   --color-parchment: #fbf7ee;
   --color-line: #e7e2d8; /* Borders */
@@ -65,6 +66,7 @@
   --shadow-hover: 0 14px 30px -22px rgb(23 33 27 / 0.3); /* card hover only */
   --shadow-lift: 0 16px 40px -18px rgb(23 33 27 / 0.28); /* dropdowns */
   --shadow-float: 0 20px 50px -24px rgb(2 42 32 / 0.45); /* search bar, modals */
+  --shadow-dock: 0 14px 34px -14px rgb(23 33 27 / 0.28), 0 2px 6px rgb(23 33 27 / 0.06); /* phone tab bar, sticky bars */
 
   /* ---------- Breakpoints (375 / 768 / 1024 / 1280 / 1440) ---------- */
   --breakpoint-xs: 25rem;

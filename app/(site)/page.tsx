@@ -5,6 +5,7 @@ import { websiteLd } from "@/lib/seo";
 import { JsonLd } from "@/components/common/json-ld";
 import { HomeFeed } from "@/components/home/home-feed";
 import { PromoBanners } from "@/components/home/promo-banners";
+import { MobileWelcome } from "@/components/home/mobile-welcome";
 import { WantedSection } from "@/components/home/wanted-section";
 import { ShopLocal } from "@/components/home/shop-local";
 import { LocalBazaar } from "@/components/home/local-bazaar";
@@ -37,6 +38,7 @@ export default async function HomePage() {
   return (
     <div className="bg-white">
       <JsonLd data={websiteLd()} />
+      <MobileWelcome />
       <PromoBanners />
       <HomeFeed listings={listings} categories={categories} />
       <WantedSection requests={wanted} />

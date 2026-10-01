@@ -108,7 +108,7 @@ export default async function WantedDetailPage({ params }: { params: Promise<{ s
                     More {cat.shortName}
                   </Link>
                 </div>
-                <ul className="mt-5 grid grid-cols-2 gap-x-3 gap-y-8 md:gap-x-5 xl:grid-cols-4">
+                <ul className="mt-5 grid grid-cols-2 gap-3 md:gap-x-5 md:gap-y-8 xl:grid-cols-4">
                   {matching.map((l) => (
                     <li key={l.id}>
                       <ProductCard listing={l} />

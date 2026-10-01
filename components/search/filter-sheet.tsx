@@ -10,6 +10,14 @@ import { cn } from "@/lib/utils";
 export function FilterSheet({ count, clearHref, total, children }: { count: number; clearHref: string; total: number; children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
+  // The phone search's filter button: an event on /search, or ?filters=open from other pages
+  useEffect(() => {
+    const show = () => setOpen(true);
+    window.addEventListener("rego:open-filters", show);
+    if (new URLSearchParams(window.location.search).get("filters") === "open") show();
+    return () => window.removeEventListener("rego:open-filters", show);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;

@@ -134,7 +134,7 @@ export function ShopProducts({ products, shopName }: { products: ListingCardData
       </p>
 
       {shown.length > 0 ? (
-        <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 md:gap-x-5 lg:grid-cols-4 xl:grid-cols-5">
+        <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-5 md:gap-y-8 lg:grid-cols-4 xl:grid-cols-5">
           {shown.map((l) => (
             <li key={l.id}>
               <ProductCard listing={l} />

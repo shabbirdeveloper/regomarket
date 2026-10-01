@@ -24,13 +24,13 @@ export function HomeFeed({ listings, categories }: { listings: ListingCardData[]
 
   const chips: { key: FilterKey; label: string; icon?: ReactNode }[] = [
     { key: "recommended", label: "Recommended" },
-    { key: "new", label: "Just posted", icon: <Clock className="size-4 text-[#e0552b]" aria-hidden /> },
-    { key: "delivery", label: "Home delivery", icon: <Truck className="size-4 text-mountain" aria-hidden /> },
-    { key: "shops", label: "From shops", icon: <Store className="size-4 text-gold-ink" aria-hidden /> },
+    { key: "new", label: "Just posted", icon: <Clock className="size-4" aria-hidden /> },
+    { key: "delivery", label: "Home delivery", icon: <Truck className="size-4" aria-hidden /> },
+    { key: "shops", label: "From shops", icon: <Store className="size-4" aria-hidden /> },
     ...categories.map((c) => ({
       key: c.slug as FilterKey,
       label: c.shortName,
-      icon: <CategoryIcon icon={c.icon} size={16} strokeWidth={1.8} className="text-ink/60" />,
+      icon: <CategoryIcon icon={c.icon} size={16} strokeWidth={1.8} />,
     })),
   ];
 
@@ -60,10 +60,20 @@ export function HomeFeed({ listings, categories }: { listings: ListingCardData[]
   };
 
   return (
-    <section aria-labelledby="feed-title" className="shell pb-14 pt-6 md:pb-20 md:pt-8">
+    <section aria-labelledby="feed-title" className="shell pb-14 pt-7 md:pb-20 md:pt-8">
       <h2 id="feed-title" className="sr-only">
         Ads across Gilgit-Baltistan
       </h2>
+
+      {/* Phones: section title first, like an app */}
+      <div className="mb-3.5 flex items-center justify-between md:hidden">
+        <p className="text-[19px] font-semibold tracking-[-0.015em] text-ink" aria-hidden>
+          Popular in GB
+        </p>
+        <Link href="/search" className="inline-flex items-center gap-0.5 text-[13.5px] font-medium text-muted">
+          View all <ChevronRight className="size-4" aria-hidden />
+        </Link>
+      </div>
 
       {/* Chip row */}
       <div className="relative">
@@ -83,8 +93,8 @@ export function HomeFeed({ listings, categories }: { listings: ListingCardData[]
                 aria-selected={on}
                 onClick={() => pick(c.key)}
                 className={cn(
-                  "inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[13.5px] font-medium transition-colors",
-                  on ? "bg-ink text-white [&_svg]:text-white" : "bg-stone text-ink/80 hover:bg-line",
+                  "inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[14px] px-4 text-[13.5px] font-medium transition-colors md:h-9 md:rounded-full [&_svg]:opacity-70",
+                  on ? "bg-mountain text-white [&_svg]:opacity-100" : "bg-surface text-ink/80 hover:bg-line md:bg-stone",
                 )}
               >
                 {c.icon}
@@ -94,9 +104,9 @@ export function HomeFeed({ listings, categories }: { listings: ListingCardData[]
           })}
           <Link
             href="/wanted"
-            className="inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-stone px-4 text-[13.5px] font-medium text-ink/80 hover:bg-line"
+            className="inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[14px] bg-surface px-4 text-[13.5px] font-medium text-ink/80 hover:bg-line md:h-9 md:rounded-full md:bg-stone [&_svg]:opacity-70"
           >
-            <Flame className="size-4 text-[#e0552b]" aria-hidden />
+            <Flame className="size-4" aria-hidden />
             Wanted
           </Link>
         </div>
@@ -111,14 +121,14 @@ export function HomeFeed({ listings, categories }: { listings: ListingCardData[]
       </div>
 
       {/* Grid heading */}
-      <div className="mt-8 flex items-end justify-between gap-4 border-b border-line pb-3">
-        <h3 className="text-[20px] font-semibold tracking-[-0.02em] text-ink md:text-[22px]">{heading}</h3>
+      <div className="mt-5 flex items-end justify-between gap-4 pb-1 md:mt-8 md:border-b md:border-line md:pb-3">
+        <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-ink md:text-[22px] md:tracking-[-0.02em]">{heading}</h3>
         <p className="tabular shrink-0 text-[13px] text-muted">{items.length} ads</p>
       </div>
 
       {/* Grid */}
       {items.length ? (
-        <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 md:gap-x-5 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:mt-6 md:gap-x-5 md:gap-y-8 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           {items.slice(0, shown).map((l, i) => (
             <li key={l.id}>
               <ProductCard listing={l} priority={i < 5} />

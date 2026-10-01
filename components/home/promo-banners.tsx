@@ -82,12 +82,12 @@ export function PromoBanners() {
                 <li
                   key={`${b.href}-${i}`}
                   aria-hidden={copy || undefined}
-                  className={cn("w-[300px] shrink-0 pr-3 sm:w-[380px] md:pr-4 lg:w-[440px]", copy && "motion-reduce:hidden")}
+                  className={cn("w-[308px] shrink-0 pr-3 sm:w-[380px] md:pr-4 lg:w-[440px]", copy && "motion-reduce:hidden")}
                 >
                   <Link
                     href={b.href}
                     tabIndex={copy ? -1 : undefined}
-                    className="on-dark group relative isolate flex h-[190px] flex-col justify-end overflow-hidden rounded-xl bg-deep p-5 text-white md:h-[210px] lg:h-[230px] lg:p-6"
+                    className="on-dark group relative isolate flex h-[178px] flex-col justify-end overflow-hidden rounded-[22px] bg-deep p-5 text-white md:h-[210px] md:rounded-xl lg:h-[230px] lg:p-6"
                   >
                     <div className="absolute inset-0 -z-10 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
                       <Photo media={b.image} priority={i === 0} sizes="(min-width: 1024px) 440px, (min-width: 640px) 380px, 300px" fallback={null} />
@@ -96,7 +96,7 @@ export function PromoBanners() {
                     <p className="text-[11.5px] font-semibold uppercase tracking-[0.12em] text-gold-soft">{b.kicker}</p>
                     <h3 className="mt-1.5 max-w-[18ch] text-[20px] font-bold leading-[1.15] tracking-[-0.02em] lg:text-[24px]">{b.title}</h3>
                     <p className="mt-1 max-w-[30ch] text-[13px] text-white/80">{b.sub}</p>
-                    <span className="mt-3.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[12.5px] font-semibold text-ink transition-colors group-hover:bg-gold-soft">
+                    <span className="mt-3.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-4 py-2 text-[12.5px] font-semibold text-ink transition-colors group-hover:bg-gold-soft md:px-3.5 md:py-1.5">
                       {b.cta}
                       <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
                     </span>

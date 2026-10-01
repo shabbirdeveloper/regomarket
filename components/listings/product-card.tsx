@@ -42,14 +42,14 @@ export function ProductCard({ listing, priority = false }: { listing: ListingCar
   const urgent = listing.badges.includes("urgent");
 
   return (
-    <article className="group relative isolate flex min-w-0 flex-col transition-transform duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] md:hover:z-10 md:hover:-translate-y-1 md:focus-within:z-10 md:focus-within:-translate-y-1">
+    <article className="group relative isolate flex min-w-0 flex-col max-md:rounded-[20px] max-md:bg-surface max-md:p-2 max-md:pb-3 transition-transform duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] md:hover:z-10 md:hover:-translate-y-1 md:focus-within:z-10 md:focus-within:-translate-y-1">
       {/* Hover surface: a white panel with a soft shadow fades in around the tile */}
       <span
         aria-hidden
         className="pointer-events-none absolute -inset-2.5 -z-10 scale-[0.97] rounded-2xl bg-white opacity-0 shadow-[0_28px_56px_-28px_rgb(23_33_27/0.45),0_2px_8px_rgb(23_33_27/0.05)] ring-1 ring-line transition-[opacity,transform] duration-300 ease-out md:group-hover:scale-100 md:group-hover:opacity-100 md:group-focus-within:scale-100 md:group-focus-within:opacity-100"
       />
 
-      <div className="relative aspect-square overflow-hidden rounded-xl bg-[#f3f1ec]">
+      <div className="relative aspect-square overflow-hidden rounded-[14px] bg-[#ebe8e1] md:rounded-xl md:bg-[#f3f1ec]">
         <Photo
           media={listing.images[0]}
           priority={priority}
@@ -78,13 +78,13 @@ export function ProductCard({ listing, priority = false }: { listing: ListingCar
         <SaveButton id={listing.id} title={listing.title} className="absolute right-2 top-2 z-10 size-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100" />
       </div>
 
-      <h3 className="mt-2.5 truncate text-[14px] font-medium text-ink transition-colors md:group-hover:text-mountain" title={listing.title}>
+      <h3 className="mt-2.5 truncate text-[14px] font-medium text-ink max-md:px-1 transition-colors md:group-hover:text-mountain" title={listing.title}>
         <Link href={routes.listing(listing.slug)} className="focus-visible:outline-none after:absolute after:inset-0 after:content-['']">
           {listing.title}
         </Link>
       </h3>
 
-      <div className="mt-1 flex items-center gap-2">
+      <div className="mt-1 flex items-center gap-2 max-md:pl-1">
         <p className="min-w-0 truncate leading-none">
           <span className="text-[11.5px] font-semibold text-ink/70">Rs </span>
           <span className="text-[17px] font-bold tracking-[-0.01em] text-ink">{formatNumber(listing.price.amount)}</span>
@@ -99,7 +99,7 @@ export function ProductCard({ listing, priority = false }: { listing: ListingCar
         <Link
           href={listing.orderable ? `/checkout?listing=${listing.slug}` : `${routes.listing(listing.slug)}#contact`}
           aria-label={listing.orderable ? `Order ${listing.title}` : `Chat with seller about ${listing.title}`}
-          className="relative z-10 ml-auto grid size-8 shrink-0 place-items-center rounded-full bg-stone text-ink transition-colors hover:bg-mountain-hover hover:text-white md:group-hover:bg-mountain md:group-hover:text-white"
+          className="relative z-10 ml-auto grid size-8 shrink-0 place-items-center rounded-full bg-stone text-ink max-md:bg-white max-md:shadow-[0_1px_2px_rgb(23_33_27/0.08)] transition-colors hover:bg-mountain-hover hover:text-white md:group-hover:bg-mountain md:group-hover:text-white"
         >
           {listing.orderable ? (
             <ShoppingCart className="size-[15px]" strokeWidth={2.2} aria-hidden />
@@ -109,7 +109,7 @@ export function ProductCard({ listing, priority = false }: { listing: ListingCar
         </Link>
       </div>
 
-      <p className="mt-1.5 flex min-w-0 items-center gap-1.5 text-[12px] text-muted">
+      <p className="mt-1.5 flex min-w-0 items-center gap-1.5 text-[12px] text-muted max-md:px-1">
         {rating ? (
           <>
             <Stars rating={rating} />
@@ -127,7 +127,7 @@ export function ProductCard({ listing, priority = false }: { listing: ListingCar
         )}
       </p>
       {rating ? (
-        <p className={cn("mt-0.5 truncate text-[11.5px] text-muted")}>
+        <p className={cn("mt-0.5 truncate text-[11.5px] text-muted max-md:px-1")}>
           {district} · {listing.postedLabel}
         </p>
       ) : null}

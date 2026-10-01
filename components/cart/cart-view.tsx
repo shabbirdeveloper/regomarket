@@ -101,7 +101,7 @@ export function CartView() {
     return (
       <div className="min-h-[60vh] bg-cream">
         <div className="shell py-16">
-          <div className="mx-auto max-w-md rounded-2xl border border-line bg-white p-8 text-center">
+          <div className="mx-auto max-w-md rounded-[22px] bg-white p-8 text-center md:rounded-2xl md:border md:border-line">
             <span className="mx-auto grid size-14 place-items-center rounded-full bg-mint text-mountain">
               <ShoppingCart className="size-6" aria-hidden />
             </span>
@@ -118,7 +118,7 @@ export function CartView() {
 
   return (
     <div className="bg-cream">
-      <div className="shell pb-28 pt-4 md:pb-16 md:pt-6">
+      <div className="shell pb-48 pt-2 md:pb-16 md:pt-6">
         <h1 className="text-[26px] font-bold tracking-[-0.02em] text-ink md:text-[30px]">
           Cart <span className="text-[18px] font-semibold text-muted">({count})</span>
         </h1>
@@ -126,8 +126,8 @@ export function CartView() {
         <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
           <div className="space-y-4">
             {groups.map((g) => (
-              <section key={g.sellerId} className="overflow-hidden rounded-2xl border border-line bg-white">
-                <header className="flex items-center justify-between gap-3 border-b border-line bg-[#fbfaf6] px-5 py-3">
+              <section key={g.sellerId} className="overflow-hidden rounded-[22px] bg-white max-md:shadow-[0_1px_2px_rgb(23_33_27/0.04)] md:rounded-2xl md:border md:border-line">
+                <header className="flex items-center justify-between gap-3 border-b border-line bg-[#fbfaf6] px-4 py-3 md:px-5">
                   <p className="flex min-w-0 items-center gap-2 text-[14px] font-semibold text-ink">
                     <Store className="size-4 shrink-0 text-mountain" aria-hidden />
                     {g.shopSlug ? (
@@ -145,8 +145,8 @@ export function CartView() {
                     const off = unavailable.has(it.listingId);
                     const img = thumbSrc(it.image);
                     return (
-                      <li key={it.listingId} className={cn("flex gap-4 px-5 py-4", off && "bg-urgent-wash/40")}>
-                        <Link href={`/listing/${it.slug}`} className="block size-20 shrink-0 overflow-hidden rounded-xl bg-stone">
+                      <li key={it.listingId} className={cn("flex gap-3.5 px-4 py-4 md:gap-4 md:px-5", off && "bg-urgent-wash/40")}>
+                        <Link href={`/listing/${it.slug}`} className="block size-[88px] shrink-0 overflow-hidden rounded-[16px] bg-surface md:size-20 md:rounded-xl">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           {img && <img src={img} alt="" className={cn("size-full object-cover", off && "opacity-50 grayscale")} loading="lazy" />}
                         </Link>
@@ -170,7 +170,7 @@ export function CartView() {
                             </div>
                           )}
                         </div>
-                        <button type="button" onClick={() => remove(it.listingId)} aria-label={`Remove ${it.title}`} className="grid size-9 shrink-0 place-items-center self-start rounded-full text-muted hover:bg-urgent-wash hover:text-urgent">
+                        <button type="button" onClick={() => remove(it.listingId)} aria-label={`Remove ${it.title}`} className="grid size-9 shrink-0 place-items-center self-start rounded-full text-urgent/80 hover:bg-urgent-wash hover:text-urgent md:text-muted">
                           <Trash2 className="size-4" />
                         </button>
                       </li>
@@ -182,7 +182,7 @@ export function CartView() {
           </div>
 
           {/* Summary */}
-          <aside className="rounded-2xl border border-line bg-white p-5 lg:sticky lg:top-28">
+          <aside className="rounded-[22px] bg-white p-5 max-md:shadow-[0_1px_2px_rgb(23_33_27/0.04)] md:rounded-2xl md:border md:border-line lg:sticky lg:top-28">
             <h2 className="text-[16px] font-semibold text-ink">Summary</h2>
             <dl className="mt-3 space-y-2 text-[14px]">
               <div className="flex justify-between">
@@ -229,7 +229,7 @@ export function CartView() {
       </div>
 
       {/* Phones: sticky checkout bar above the tab bar */}
-      <div className="fixed inset-x-0 bottom-16 z-40 border-t border-line bg-white px-4 py-3 md:bottom-0 md:pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:hidden">
+      <div className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+86px)] z-40 rounded-[22px] bg-white p-3 pl-4 shadow-dock ring-1 ring-ink/[0.06] md:inset-x-0 md:bottom-0 md:rounded-none md:border-t md:border-line md:px-4 md:pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:shadow-none md:ring-0 lg:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-[12px] text-muted">Items total</p>
@@ -239,7 +239,7 @@ export function CartView() {
             href="/checkout"
             aria-disabled={blocked}
             onClick={(e) => blocked && e.preventDefault()}
-            className={cn("flex h-12 items-center gap-2 rounded-full px-7 text-[15px] font-semibold text-white", blocked ? "pointer-events-none bg-muted/50" : "bg-mountain")}
+            className={cn("flex h-12 items-center gap-2 rounded-[16px] px-7 text-[15px] font-semibold text-white md:rounded-full", blocked ? "pointer-events-none bg-muted/50" : "bg-mountain")}
           >
             Checkout <ArrowRight className="size-4" aria-hidden />
           </Link>

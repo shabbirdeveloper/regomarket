@@ -8,46 +8,44 @@ import { cn } from "@/lib/utils";
 const items = [
   { href: "/", label: "Home", Icon: House },
   { href: "/search", label: "Explore", Icon: Compass },
-  { href: "/sell", label: "Sell", Icon: Plus, primary: true },
+  { href: "/sell", label: "Sell — post a free ad", Icon: Plus, sell: true },
   { href: "/messages", label: "Messages", Icon: MessageSquare },
-  { href: "/dashboard", label: "Profile", Icon: UserRound },
+  { href: "/dashboard", label: "My account", Icon: UserRound },
 ];
 
-/** Bottom tab bar for phones. SELL is the raised centre action. */
+/**
+ * Phones: a floating tab dock. The current tab sits in a solid green pill;
+ * Sell is always outlined so it stays findable. Ad pages hide the dock and
+ * show their own buy bar instead.
+ */
 export function MobileNav() {
   const pathname = usePathname();
+  if (pathname.startsWith("/listing/")) return null;
+
   return (
     <nav
       aria-label="Quick navigation"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 px-3 pb-[calc(env(safe-area-inset-bottom)+10px)] md:hidden print:hidden"
     >
-      <ul className="mx-auto grid h-16 max-w-md grid-cols-5">
-        {items.map(({ href, label, Icon, primary }) => {
+      <ul className="pointer-events-auto mx-auto grid h-[66px] max-w-md grid-cols-5 items-center rounded-[24px] bg-white px-1.5 shadow-dock ring-1 ring-ink/[0.06]">
+        {items.map(({ href, label, Icon, sell }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
-          if (primary) {
-            return (
-              <li key={href} className="relative flex justify-center">
-                <Link href={href} className="group -mt-6 flex flex-col items-center gap-1" aria-label="Sell — post a free ad">
-                  <span className="grid size-14 place-items-center rounded-full bg-mountain text-white ring-4 ring-white transition-transform group-active:scale-95">
-                    <Icon className="size-6" strokeWidth={2.2} aria-hidden />
-                  </span>
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-mountain">Sell</span>
-                </Link>
-              </li>
-            );
-          }
           return (
-            <li key={href}>
+            <li key={href} className="flex justify-center">
               <Link
                 href={href}
+                aria-label={label}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex h-full flex-col items-center justify-center gap-1 text-[11px] font-medium",
-                  active ? "text-mountain" : "text-muted",
+                  "grid h-11 w-[54px] place-items-center rounded-[16px] transition-colors active:scale-95",
+                  active
+                    ? "bg-mountain text-white"
+                    : sell
+                      ? "text-mountain ring-[1.5px] ring-inset ring-mountain/70"
+                      : "text-ink/55 hover:text-ink",
                 )}
               >
-                <Icon className="size-[22px]" strokeWidth={active ? 2 : 1.75} aria-hidden />
-                {label}
+                <Icon className="size-[22px]" strokeWidth={active || sell ? 2.1 : 1.8} aria-hidden />
               </Link>
             </li>
           );

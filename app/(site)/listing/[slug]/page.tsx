@@ -129,9 +129,9 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="bg-white">
-      <div className="shell pb-16 pt-4 md:pt-6">
+      <div className="shell pb-32 pt-1 md:pb-16 md:pt-6">
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="text-[13px] text-muted">
+        <nav aria-label="Breadcrumb" className="text-[13px] text-muted max-md:hidden">
           <ol className="flex flex-wrap items-center gap-1">
             <li>
               <Link href="/" className="hover:text-ink">
@@ -157,7 +157,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
           </ol>
         </nav>
 
-        <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
+        <div className="mt-2 grid gap-6 md:mt-5 md:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
           {/* 1 — Photos */}
           <div className="lg:col-start-1 lg:row-start-1">
             <Gallery images={listing.images} title={listing.title}>
@@ -298,6 +298,8 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                   phoneMasked={seller.phoneMasked}
                   whatsapp={seller.whatsapp}
                   sellerName={seller.name}
+                  saveId={listing.id}
+                  title={listing.title}
                 />
               </div>
 
@@ -415,7 +417,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 </Link>
               )}
             </div>
-            <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 md:gap-x-5 lg:grid-cols-4 xl:grid-cols-6">
+            <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:mt-6 md:gap-x-5 md:gap-y-8 lg:grid-cols-4 xl:grid-cols-6">
               {fromSeller.map((l) => (
                 <li key={l.id}>
                   <ProductCard listing={l} />
@@ -438,7 +440,7 @@ export default async function ListingPage({ params }: { params: Promise<{ slug: 
                 See all in {category.shortName}
               </Link>
             </div>
-            <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 md:gap-x-5 lg:grid-cols-4 xl:grid-cols-6">
+            <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:mt-6 md:gap-x-5 md:gap-y-8 lg:grid-cols-4 xl:grid-cols-6">
               {similar.map((l) => (
                 <li key={l.id}>
                   <ProductCard listing={l} />

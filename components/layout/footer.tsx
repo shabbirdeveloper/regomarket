@@ -125,7 +125,7 @@ export async function Footer() {
 
       {/* Legal */}
       <div className="border-t border-white/10">
-        <div className="shell flex flex-col gap-3 pb-28 pt-5 text-[13px] text-white/50 md:flex-row md:items-center md:justify-between md:pb-6">
+        <div className="shell flex flex-col gap-3 pb-32 pt-5 text-[13px] text-white/50 md:flex-row md:items-center md:justify-between md:pb-6">
           <p>© {new Date().getFullYear()} REGOMARKET · Made in Gilgit-Baltistan</p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <Link href="/terms" className="hover:text-white">

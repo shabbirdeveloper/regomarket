@@ -91,7 +91,7 @@ export default async function SellerPage({ params }: { params: Promise<{ id: str
             Ads by {first} <span className="text-[15px] font-normal text-muted">({ads.length})</span>
           </h2>
           {ads.length ? (
-            <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 md:gap-x-5 lg:grid-cols-4 xl:grid-cols-5">
+            <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-x-5 md:gap-y-8 lg:grid-cols-4 xl:grid-cols-5">
               {ads.map((l) => (
                 <li key={l.id}>
                   <ProductCard listing={l} />
