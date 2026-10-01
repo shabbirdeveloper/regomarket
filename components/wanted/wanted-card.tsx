@@ -15,9 +15,9 @@ export function WantedCard({ request }: { request: WantedCardData }) {
   const details = [request.quantity, placeLabel(request.place, { withTown: true }), request.mode].filter(Boolean);
 
   return (
-    <article className="group relative flex h-full flex-col rounded-xl border border-white/[0.07] bg-[#14223b] p-6 text-white transition-colors duration-200 hover:border-white/20 focus-within:border-white/25">
+    <article className="group relative flex h-full flex-col rounded-xl border border-white/[0.07] bg-mountain p-6 text-white transition-colors duration-200 hover:border-white/20 focus-within:border-white/25">
       {/* Kind + when */}
-      <p className="flex items-center justify-between gap-3 text-[11.5px] font-medium uppercase tracking-[0.14em] text-white/45">
+      <p className="flex items-center justify-between gap-3 text-[11.5px] font-medium uppercase tracking-[0.14em] text-white/60">
         <span>Wanted · {cat.shortName}</span>
         <span className="normal-case tracking-normal">{request.postedLabel}</span>
       </p>
@@ -28,11 +28,11 @@ export function WantedCard({ request }: { request: WantedCardData }) {
           {request.title}
         </Link>
       </h3>
-      <p className="mt-1.5 text-[13.5px] text-white/60">{details.join("  ·  ")}</p>
+      <p className="mt-1.5 text-[13.5px] text-white/70">{details.join("  ·  ")}</p>
 
       {/* Budget */}
       <div className="mt-5 border-t border-white/10 pt-4">
-        <p className="text-[12px] text-white/45">Budget</p>
+        <p className="text-[12px] text-white/60">Budget</p>
         <p className="mt-0.5 text-[20px] font-semibold tracking-[-0.01em] tabular-nums">{formatBudget(request.budget)}</p>
       </div>
 
@@ -43,7 +43,7 @@ export function WantedCard({ request }: { request: WantedCardData }) {
             <span className="truncate">{request.buyerName}</span>
             {request.buyerVerified && <BadgeCheck className="size-3.5 shrink-0 text-white/60" role="img" aria-label="Verified" />}
           </p>
-          <p className="text-white/45">
+          <p className="text-white/60">
             {request.buyerType === "Business" ? "Business" : "Individual"} · {request.offers} {request.offers === 1 ? "offer" : "offers"}
           </p>
         </div>
