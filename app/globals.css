@@ -79,6 +79,9 @@
   --animate-shimmer: shimmer 1.6s linear infinite;
   --animate-fade-in: fade-in 180ms var(--ease-out-soft);
   --animate-marquee: marquee 55s linear infinite;
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1); /* fast start, long soft settle */
+  --animate-page-in: page-in 420ms var(--ease-premium);
+  --animate-dock-pop: dock-pop 420ms var(--ease-premium);
 
   @keyframes heart-pop {
     0% { transform: scale(1); }
@@ -94,6 +97,15 @@
     to { opacity: 1; transform: translateY(0); }
   }
   /* News-ticker strip: the list is rendered twice, so -50% loops seamlessly */
+  @keyframes page-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes dock-pop {
+    0% { transform: scale(0.82); }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
@@ -366,5 +378,100 @@
   }
   body {
     background: #fff !important;
+  }
+}
+
+/* ---------- Motion system ----------
+   One vocabulary across the site: things rise into place as you scroll,
+   cards follow the cursor with a gold edge light, buttons catch a sheen,
+   links draw their underline. All of it switches off for reduced motion. */
+@layer components {
+  /* 1. Scroll reveal — set up by <MotionRoot/>; content is visible without JS */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal] {
+      transition:
+        opacity 0.9s var(--ease-premium),
+        transform 0.9s var(--ease-premium);
+      transition-delay: calc(var(--i, 0) * 70ms);
+    }
+    [data-reveal="pending"] {
+      opacity: 0;
+      transform: translate3d(0, 26px, 0) scale(0.985);
+    }
+  }
+
+  /* 2. Spotlight cards — a soft light and a gold edge that follow the cursor */
+  [data-spotlight] {
+    position: relative;
+  }
+  [data-spotlight]::before,
+  [data-spotlight]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s var(--ease-premium);
+    z-index: 1;
+  }
+  [data-spotlight]::before {
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.09), transparent 45%);
+  }
+  [data-spotlight]::after {
+    padding: 1.5px;
+    background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgb(227 194 126 / 0.95), rgb(227 194 126 / 0.25) 45%, transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    [data-spotlight]:hover::before,
+    [data-spotlight]:hover::after {
+      opacity: 1;
+    }
+  }
+
+  /* 3. Sheen — a light sweep across solid buttons on hover */
+  .shine {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 25%, rgb(255 255 255 / 0.32) 50%, transparent 75%);
+    transform: translateX(-130%);
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .shine:hover::after {
+      transform: translateX(130%);
+      transition: transform 0.85s var(--ease-premium);
+    }
+  }
+
+  /* 4. Drawn underline for text links */
+  .link-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1.5px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s var(--ease-premium), color 0.2s;
+  }
+  .link-draw:hover,
+  .link-draw:focus-visible {
+    background-size: 100% 1.5px;
+  }
+
+  /* 5. Press feedback for anything tappable */
+  .press {
+    transition: transform 0.2s var(--ease-premium);
+  }
+  .press:active {
+    transform: scale(0.97);
   }
 }

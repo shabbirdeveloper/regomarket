@@ -40,9 +40,10 @@ export function ProductCard({ listing, priority = false }: { listing: ListingCar
   const { rating, reviewCount, deals } = listing.seller;
   const unit = listing.price.unit ? unitLabel(listing.price.unit) : "";
   const urgent = listing.badges.includes("urgent");
+  const second = listing.images[1]?.src ? listing.images[1] : null;
 
   return (
-    <article className="group relative isolate flex min-w-0 flex-col max-md:rounded-[20px] max-md:bg-surface max-md:p-2 max-md:pb-3 transition-transform duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] md:hover:z-10 md:hover:-translate-y-1 md:focus-within:z-10 md:focus-within:-translate-y-1">
+    <article className="press group relative isolate flex min-w-0 flex-col max-md:rounded-[20px] max-md:bg-surface max-md:p-2 max-md:pb-3 transition-transform duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] md:hover:z-10 md:hover:-translate-y-1 md:focus-within:z-10 md:focus-within:-translate-y-1">
       {/* Hover surface: a white panel with a soft shadow fades in around the tile */}
       <span
         aria-hidden
@@ -54,9 +55,15 @@ export function ProductCard({ listing, priority = false }: { listing: ListingCar
           media={listing.images[0]}
           priority={priority}
           sizes="(min-width: 1536px) 16vw, (min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
-          className="transition-transform duration-[900ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] md:group-hover:scale-[1.07]"
+          className="transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:scale-[1.07]"
           fallback={<ProductPlaceholder tint={cat.tint} icon={cat.icon} label={listing.images[0].alt} />}
         />
+        {/* Desktop: the second photo fades in on hover, like a shop flipping the item over */}
+        {second && (
+          <span aria-hidden className="absolute inset-0 hidden scale-[1.04] opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] md:block md:group-hover:scale-100 md:group-hover:opacity-100">
+            <Photo media={second} sizes="(min-width: 1536px) 16vw, (min-width: 1024px) 20vw, 33vw" fallback={null} />
+          </span>
+        )}
         {urgent && (
           <span className="absolute left-2.5 top-2.5 rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-semibold text-[#c2410c] shadow-sm">Urgent</span>
         )}

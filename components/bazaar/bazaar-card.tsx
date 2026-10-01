@@ -21,12 +21,13 @@ export function BazaarCard({ bazaar, featured = false }: { bazaar: Bazaar; featu
   return (
     <Link
       href={routes.bazaar(bazaar.slug)}
+      data-spotlight=""
       className={cn(
-        "on-dark group relative isolate flex h-full flex-col justify-end overflow-hidden rounded-lg bg-deep text-white",
+        "on-dark press group relative isolate flex h-full flex-col justify-end overflow-hidden rounded-lg bg-deep text-white",
         featured ? "p-5 lg:p-8" : "p-5",
       )}
     >
-      <div className="absolute inset-0 -z-10 transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]">
+      <div className="absolute inset-0 -z-10 transition-[transform,filter] duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.08] group-hover:saturate-[1.15]">
         <Photo
           media={bazaar.image}
           sizes={featured ? "(min-width: 1024px) 50vw, 85vw" : "(min-width: 1024px) 25vw, 70vw"}
@@ -50,7 +51,7 @@ export function BazaarCard({ bazaar, featured = false }: { bazaar: Bazaar; featu
         <span className="h-px w-5 bg-gold-soft" aria-hidden />
         {where}
       </p>
-      <h3 className={cn("mt-1.5 font-semibold leading-[1.1] tracking-[-0.02em]", featured ? "text-[21px] lg:text-[36px]" : "text-[21px]")}>
+      <h3 className={cn("mt-1.5 font-semibold transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:-translate-y-0.5 leading-[1.1] tracking-[-0.02em]", featured ? "text-[21px] lg:text-[36px]" : "text-[21px]")}>
         {bazaar.name}
       </h3>
 

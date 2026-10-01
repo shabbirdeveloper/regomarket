@@ -117,7 +117,7 @@ export default async function WantedPage({ searchParams }: { searchParams: Promi
         {list.length ? (
           <ul className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {list.map((w) => (
-              <li key={w.id}>
+              <li key={w.id} data-reveal="">
                 <WantedCard request={w} />
               </li>
             ))}

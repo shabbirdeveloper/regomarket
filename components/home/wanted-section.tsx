@@ -5,6 +5,7 @@ import { WantedCard } from "@/components/wanted/wanted-card";
 import { SectionHeader, MobileViewAll } from "@/components/common/section-header";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { stagger } from "@/components/motion/motion-root";
 
 export function WantedSection({ requests }: { requests: WantedCardData[] }) {
   return (
@@ -24,7 +25,7 @@ export function WantedSection({ requests }: { requests: WantedCardData[] }) {
 
         <ul className="mt-7 grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {requests.slice(0, 6).map((r, i) => (
-            <li key={r.id} className={cn(i > 2 && "hidden md:block")}>
+            <li key={r.id} data-reveal="" style={stagger(i % 3)} className={cn(i > 2 && "hidden md:block")}>
               <WantedCard request={r} />
             </li>
           ))}

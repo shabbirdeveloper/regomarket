@@ -42,6 +42,7 @@ export function SectionHeader({
   const center = align === "center";
   return (
     <div
+      data-reveal=""
       className={cn(
         "flex flex-col gap-3",
         center ? "items-center text-center" : "md:flex-row md:items-end md:justify-between md:gap-6",
@@ -67,12 +68,12 @@ export function SectionHeader({
             <Link
               href={action.href}
               className={cn(
-                "group hidden shrink-0 items-center gap-1.5 text-[14px] font-semibold underline-offset-4 hover:underline md:inline-flex",
+                "group hidden shrink-0 items-center gap-1.5 text-[14px] font-semibold md:inline-flex",
                 dark ? "text-gold-soft hover:text-white" : "text-mountain hover:text-forest",
               )}
             >
-              {action.label}
-              <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
+              <span className="link-draw pb-0.5">{action.label}</span>
+              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
             </Link>
           )}
         </div>
@@ -86,7 +87,7 @@ export function MobileViewAll({ href, label }: { href: string; label: string }) 
   return (
     <Link
       href={href}
-      className="mt-8 flex h-11 items-center justify-center gap-1.5 rounded-md border border-mountain/35 bg-paper text-[14px] font-semibold text-ink md:hidden"
+      className="press mt-8 flex h-11 items-center justify-center gap-1.5 rounded-md border border-mountain/35 bg-paper text-[14px] font-semibold text-ink md:hidden"
     >
       {label}
       <ArrowRight className="size-4" aria-hidden />

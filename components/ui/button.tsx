@@ -14,20 +14,20 @@ import { cn } from "@/lib/utils";
  * Use `buttonVariants()` on <Link> for navigational CTAs.
  */
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg font-semibold transition-[background-color,border-color,color,box-shadow] duration-200 ease-out disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-mountain text-white hover:bg-mountain-hover",
+        primary: "shine bg-mountain text-white hover:bg-mountain-hover",
         secondary: "border border-line-strong bg-white text-ink hover:border-ink/40",
-        premium: "bg-forest text-white hover:bg-deep",
+        premium: "shine bg-forest text-white hover:bg-deep",
         ghost: "text-mountain hover:bg-mint",
         light: "bg-paper text-forest hover:bg-white",
         "outline-light": "border border-white/35 text-white hover:border-white hover:bg-white/10",
         danger: "bg-urgent text-white hover:bg-[#7f3026]",
-        whatsapp: "bg-[#1f7a52] text-white hover:bg-[#186643]",
+        whatsapp: "shine bg-[#1f7a52] text-white hover:bg-[#186643]",
         /* Back-compat aliases */
-        brand: "bg-forest text-white ring-1 ring-inset ring-gold/70 hover:bg-deep hover:ring-gold",
+        brand: "shine bg-forest text-white ring-1 ring-inset ring-gold/70 hover:bg-deep hover:ring-gold",
         gold: "border border-mountain/35 bg-paper text-ink hover:border-mountain hover:bg-mint",
         outline: "border border-line bg-paper text-ink hover:border-line-strong",
       },

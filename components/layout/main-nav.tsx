@@ -29,9 +29,9 @@ function Dropdown({ children, wide }: { children: ReactNode; wide?: boolean }) {
   return (
     <div
       className={cn(
-        "invisible absolute left-0 top-full z-50 pt-1 opacity-0 transition-[opacity,transform] duration-200",
-        "translate-y-1 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100",
-        "group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100",
+        "invisible absolute left-0 top-full z-50 origin-top pt-1 opacity-0 transition-[opacity,translate,scale,visibility] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        "translate-y-2 scale-[0.98] group-hover:visible group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100",
+        "group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:scale-100 group-focus-within:opacity-100",
       )}
     >
       <div className={cn("rounded-lg border border-line bg-paper p-2 shadow-lift", wide ? "w-[500px]" : "w-[280px]")}>

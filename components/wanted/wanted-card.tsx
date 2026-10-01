@@ -21,7 +21,7 @@ export function WantedCard({ request }: { request: WantedCardData }) {
   ].filter(Boolean) as { Icon: typeof MapPin; text: string }[];
 
   return (
-    <article className="group relative flex h-full flex-col rounded-[22px] bg-mountain p-1.5 text-white shadow-[0_18px_40px_-26px_rgb(4_56_44/0.7)] transition-[transform,box-shadow] duration-300 ease-out md:hover:-translate-y-1 md:hover:shadow-[0_26px_50px_-24px_rgb(4_56_44/0.75)]">
+    <article data-spotlight="" className="press group relative flex h-full flex-col rounded-[22px] bg-mountain p-1.5 text-white shadow-[0_18px_40px_-26px_rgb(4_56_44/0.7)] transition-[transform,box-shadow] duration-300 ease-out md:hover:-translate-y-1 md:hover:shadow-[0_26px_50px_-24px_rgb(4_56_44/0.75)]">
       {/* What */}
       <div className="px-4 pb-4 pt-3.5">
         <div className="flex items-center justify-between gap-3">
@@ -68,7 +68,7 @@ export function WantedCard({ request }: { request: WantedCardData }) {
         <Link
           href={`${routes.wanted(request.slug)}#offer`}
           aria-label={`Send offer: ${request.title}`}
-          className="relative z-10 inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-gold-soft pl-4 pr-3.5 text-[13px] font-semibold text-forest transition-colors hover:bg-white"
+          className="shine relative z-10 inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-gold-soft pl-4 pr-3.5 text-[13px] font-semibold text-forest transition-colors hover:bg-white"
         >
           Send offer
           <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />

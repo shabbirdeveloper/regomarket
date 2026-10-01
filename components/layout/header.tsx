@@ -71,7 +71,7 @@ export async function Header() {
 
           <Link
             href="/sell"
-            className="ml-2 hidden h-10 items-center gap-1.5 rounded-full bg-mountain px-4 text-[14px] font-semibold text-white transition-colors hover:bg-mountain-hover sm:inline-flex"
+            className="shine press ml-2 hidden h-10 items-center gap-1.5 rounded-full bg-mountain px-4 text-[14px] font-semibold text-white transition-colors hover:bg-mountain-hover sm:inline-flex"
           >
             <Plus className="size-[18px]" strokeWidth={2.4} aria-hidden />
             Sell

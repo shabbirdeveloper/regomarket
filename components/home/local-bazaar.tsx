@@ -5,6 +5,7 @@ import { routes } from "@/lib/site";
 import { SectionHeader, MobileViewAll } from "@/components/common/section-header";
 import { BazaarCard } from "@/components/bazaar/bazaar-card";
 import { cn } from "@/lib/utils";
+import { stagger } from "@/components/motion/motion-root";
 
 export function LocalBazaar({ bazaars }: { bazaars: Bazaar[] }) {
   // Busiest market first — it gets the large tile.
@@ -26,6 +27,8 @@ export function LocalBazaar({ bazaars }: { bazaars: Bazaar[] }) {
           {top.map((b, i) => (
             <li
               key={b.slug}
+              data-reveal=""
+              style={stagger(i)}
               className={cn(
                 "aspect-[4/5] w-[78%] shrink-0 xs:w-[64%] sm:w-[44%] md:w-[34%] lg:aspect-auto lg:w-auto",
                 i === 0 && "lg:col-span-2 lg:row-span-2",

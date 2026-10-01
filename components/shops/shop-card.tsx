@@ -41,6 +41,7 @@ export function ShopCard({ shop }: { shop: Shop }) {
 
   return (
     <article
+      data-spotlight=""
       className={cn(
         cardVariants({ variant: "plain" }),
         "group flex h-full flex-col rounded-xl transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)]",

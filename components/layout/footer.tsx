@@ -41,7 +41,7 @@ export async function Footer() {
             </h2>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/sell" className="inline-flex h-12 items-center rounded-full bg-white px-6 text-[14.5px] font-semibold text-forest transition-colors hover:bg-gold-soft">
+            <Link href="/sell" className="press inline-flex h-12 items-center rounded-full bg-white px-6 text-[14.5px] font-semibold text-forest transition-colors hover:bg-gold-soft">
               Post a free ad
             </Link>
             <Link
@@ -89,7 +89,7 @@ export async function Footer() {
               <ul className="mt-5 space-y-3.5">
                 {col.links.map((l) => (
                   <li key={l.href + l.label}>
-                    <Link href={l.href} className="text-[14.5px] text-white/80 transition-colors hover:text-white">
+                    <Link href={l.href} className="link-draw pb-0.5 text-[14.5px] text-white/80 transition-colors hover:text-white">
                       {l.label}
                     </Link>
                   </li>

@@ -4,6 +4,7 @@ import { Header } from "./header";
 import { Footer } from "./footer";
 import { MobileNav } from "./mobile-nav";
 import { AuthProvider } from "@/components/auth/auth-provider";
+import { MotionRoot } from "@/components/motion/motion-root";
 
 /** Global chrome shared by every public page */
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -22,6 +23,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       </main>
       <Footer />
       <MobileNav />
+      <MotionRoot />
     </AuthProvider>
   );
 }

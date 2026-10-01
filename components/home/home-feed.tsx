@@ -7,6 +7,7 @@ import type { Category, CategorySlug, ListingCardData } from "@/types";
 import { CategoryIcon } from "@/components/common/category-icon";
 import { ProductCard } from "@/components/listings/product-card";
 import { cn } from "@/lib/utils";
+import { stagger } from "@/components/motion/motion-root";
 
 type FilterKey = "recommended" | "new" | "delivery" | "shops" | CategorySlug;
 
@@ -93,7 +94,7 @@ export function HomeFeed({ listings, categories }: { listings: ListingCardData[]
                 aria-selected={on}
                 onClick={() => pick(c.key)}
                 className={cn(
-                  "inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[14px] px-4 text-[13.5px] font-medium transition-colors md:h-9 md:rounded-full [&_svg]:opacity-70",
+                  "press inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[14px] px-4 text-[13.5px] font-medium transition-[background-color,color,transform] duration-300 md:h-9 md:rounded-full [&_svg]:opacity-70",
                   on ? "bg-mountain text-white [&_svg]:opacity-100" : "bg-surface text-ink/80 hover:bg-line md:bg-stone",
                 )}
               >
@@ -128,9 +129,9 @@ export function HomeFeed({ listings, categories }: { listings: ListingCardData[]
 
       {/* Grid */}
       {items.length ? (
-        <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:mt-6 md:gap-x-5 md:gap-y-8 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        <ul key={filter} className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:mt-6 md:gap-x-5 md:gap-y-8 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           {items.slice(0, shown).map((l, i) => (
-            <li key={l.id}>
+            <li key={l.id} data-reveal="" style={stagger(i % 6)}>
               <ProductCard listing={l} priority={i < 5} />
             </li>
           ))}
@@ -150,7 +151,7 @@ export function HomeFeed({ listings, categories }: { listings: ListingCardData[]
           <button
             type="button"
             onClick={() => setShown((n) => n + PAGE)}
-            className="inline-flex h-12 items-center gap-2 rounded-full border border-line-strong bg-white px-8 text-[14.5px] font-semibold text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
+            className="shine press inline-flex h-12 items-center gap-2 rounded-full border border-line-strong bg-white px-8 text-[14.5px] font-semibold text-ink transition-colors hover:border-mountain hover:bg-mountain hover:text-white"
           >
             See more ads
             <ChevronDown className="size-4" aria-hidden />
