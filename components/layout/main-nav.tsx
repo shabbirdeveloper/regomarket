@@ -89,15 +89,15 @@ export function MainNav({ categories, bazaars }: { categories: Category[]; bazaa
 
               {item.href === "/bazaar" && (
                 <Dropdown>
-                  <ul>
+                  <ul className="grid grid-cols-2">
                     {bazaars.map((b) => (
                       <li key={b.slug}>
                         <Link
                           href={routes.bazaar(b.slug)}
-                          className="flex items-center justify-between rounded-md px-3 py-2.5 text-[14px] text-ink hover:bg-cream hover:text-mountain"
+                          className="block rounded-md px-3 py-2 text-[14px] text-ink hover:bg-cream hover:text-mountain"
                         >
-                          <span className="font-medium">{b.name}</span>
-                          <span className="text-[12px] text-muted">{b.district}</span>
+                          <span className="block font-medium">{b.name}</span>
+                          <span className="block text-[12px] text-muted">{b.district}</span>
                         </Link>
                       </li>
                     ))}
