@@ -15,13 +15,24 @@ export function ShopLocal({ shops }: { shops: Shop[] }) {
           description="Local businesses you can follow. Some deliver across GB."
           action={{ label: "See all", href: "/shops" }}
         />
-        <ul className="rail -mx-4 mt-8 gap-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:gap-6 xl:grid-cols-4">
-          {shops.slice(0, 4).map((s) => (
-            <li key={s.id} className="w-[84%] shrink-0 xs:w-[76%] sm:w-[55%] md:w-auto">
-              <ShopCard shop={s} />
-            </li>
-          ))}
-        </ul>
+        {/* Slow ticker like the top banners: pauses on hover / focus; plain swipe row for reduced motion */}
+        <div className="group/ticker -mx-4 mt-8 overflow-hidden sm:mx-0 sm:[mask-image:linear-gradient(to_right,transparent,#000_2%,#000_98%,transparent)] motion-reduce:overflow-x-auto motion-reduce:[scrollbar-width:none]">
+          <ul className="flex w-max animate-[marquee_70s_linear_infinite] py-2 group-hover/ticker:[animation-play-state:paused] group-focus-within/ticker:[animation-play-state:paused] motion-reduce:animate-none">
+            {[...shops, ...shops].map((s, i) => {
+              const copy = i >= shops.length; // second copy only makes the loop seamless
+              return (
+                <li
+                  key={`${s.id}-${i}`}
+                  aria-hidden={copy || undefined}
+                  inert={copy || undefined}
+                  className={copy ? "w-[290px] shrink-0 pr-4 sm:w-[300px] lg:pr-6 motion-reduce:hidden" : "w-[290px] shrink-0 pr-4 sm:w-[300px] lg:pr-6"}
+                >
+                  <ShopCard shop={s} />
+                </li>
+              );
+            })}
+          </ul>
+        </div>
         <div className="mt-10 hidden justify-center md:flex">
           <Link
             href="/create-shop"
