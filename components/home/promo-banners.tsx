@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowRight, Pause, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { unsplash } from "@/data/media";
 import { Photo } from "@/components/media/photo";
 import { cn } from "@/lib/utils";
@@ -65,12 +62,11 @@ const banners = [
 ];
 
 /**
- * Editorial banners that glide past like a news ticker. Hover, focus or the
- * pause button stops them; people who prefer less motion get a plain
+ * Editorial banners that glide past like a news ticker. Hover or focus
+ * stops them; people who prefer less motion get a plain
  * swipeable row instead.
  */
 export function PromoBanners() {
-  const [paused, setPaused] = useState(false);
   const n = banners.length;
 
   return (
@@ -78,10 +74,7 @@ export function PromoBanners() {
       <div className="group/ticker relative">
         <div className="-mx-4 overflow-hidden sm:mx-0 sm:rounded-xl sm:[mask-image:linear-gradient(to_right,transparent,#000_2%,#000_98%,transparent)] motion-reduce:overflow-x-auto motion-reduce:[scrollbar-width:none]">
           <ul
-            className={cn(
-              "flex w-max animate-marquee group-hover/ticker:[animation-play-state:paused] group-focus-within/ticker:[animation-play-state:paused] motion-reduce:animate-none",
-              paused && "[animation-play-state:paused]",
-            )}
+            className="flex w-max animate-marquee group-hover/ticker:[animation-play-state:paused] group-focus-within/ticker:[animation-play-state:paused] motion-reduce:animate-none"
           >
             {[...banners, ...banners].map((b, i) => {
               const copy = i >= n; // second copy only makes the loop seamless
@@ -114,15 +107,6 @@ export function PromoBanners() {
           </ul>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setPaused((p) => !p)}
-          aria-pressed={paused}
-          aria-label={paused ? "Play banners" : "Pause banners"}
-          className="absolute bottom-3 right-3 z-10 grid size-8 place-items-center rounded-full bg-black/45 text-white backdrop-blur-sm transition-colors hover:bg-black/65 motion-reduce:hidden"
-        >
-          {paused ? <Play className="size-3.5" aria-hidden /> : <Pause className="size-3.5" aria-hidden />}
-        </button>
       </div>
     </section>
   );
