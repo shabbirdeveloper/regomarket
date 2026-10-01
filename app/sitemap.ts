@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { site, routes } from "@/lib/site";
 import { getCategories, getDistricts, getListings, getShops, getBazaars } from "@/lib/data";
 
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, districts, listings, shops, bazaars] = await Promise.all([
     getCategories(),
